@@ -1,0 +1,48 @@
+apply plugin: 'java-library'
+
+/* --------------------------------------------------- */
+/* > Kotlin */
+/* --------------------------------------------------- */
+
+apply plugin: 'kotlin'
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+buildscript {
+    ext.kotlin_version = '1.2.41'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+final JVM_TARGET = '1.6'
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = JVM_TARGET
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = JVM_TARGET
+    }
+}
+
+/* --------------------------------------------------- */
+/* > Dependencies */
+/* --------------------------------------------------- */
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.squareup.okio:okio:1.14.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.0'
+}
