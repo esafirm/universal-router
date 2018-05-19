@@ -34,6 +34,16 @@ stringRouter.resolve("nolambda://test/bro/you") shouldBe "you came to the wrong 
 
 For more sample, plese look at the `sample` module or the test i created. 
 
+## Implementation in Modular Android Projects
+
+The easiest way would be
+
+```
+Create the router as a Singleton in your "core" dependencies, add your entries in every module
+```
+
+I'm sure you can find others implementation
+
 ## License 
 
 MIT @ Esa Firman
