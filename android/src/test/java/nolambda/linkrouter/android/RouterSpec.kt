@@ -25,6 +25,17 @@ class RouterSpec : StringSpec({
         homeState shouldBe true
     }
 
+    "routing with uri should be working" {
+        var productId = 0
+        R.ProductDetailRoute.register {
+            productId = it.mapParam["product_id"]?.toInt() ?: 0
+        }
+
+        Router.goTo("nolambda://detail/1")
+
+        productId shouldBe 1
+    }
+
     "routing with parameter should be working" {
         var userId = 0
         R.UserRouter.register {
