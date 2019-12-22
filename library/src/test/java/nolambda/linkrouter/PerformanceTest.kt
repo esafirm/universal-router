@@ -8,11 +8,7 @@ class PerformanceTest : StringSpec({
 
     val random = Random(10_000)
 
-    val simpleRouter = object : Router<Unit>() {
-        override fun goTo(uri: String) {
-            resolve(uri)
-        }
-    }
+    val simpleRouter = object : UriRouter<Unit>() {}
 
     val generateEntry = {
         val domain = random.nextInt().toString()

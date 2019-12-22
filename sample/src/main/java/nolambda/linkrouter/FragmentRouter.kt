@@ -2,7 +2,7 @@ package nolambda.linkrouter
 
 import android.support.v4.app.Fragment
 
-class FragmentRouter(private val activity: MainActivity) : Router<Fragment>() {
+class FragmentRouter(private val activity: MainActivity) : UriRouter<Fragment>() {
 
     private val fragmentManager by lazy { activity.supportFragmentManager }
 
@@ -12,9 +12,9 @@ class FragmentRouter(private val activity: MainActivity) : Router<Fragment>() {
         }
     }
 
-    override fun goTo(uri: String) {
+    fun goTo(uri: String) {
         fragmentManager.beginTransaction()
-                .replace(R.id.container, resolve(uri))
-                .commit()
+            .replace(R.id.container, resolve(uri))
+            .commit()
     }
 }

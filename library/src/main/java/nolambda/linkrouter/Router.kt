@@ -1,27 +1,21 @@
 package nolambda.linkrouter
 
-abstract class Router<T> {
-
-    internal var entries = linkedMapOf<DeepLinkEntry, RouterHandler<T>>()
-
-    abstract fun goTo(uri: String)
-    fun resolve(uri: String): T {
-        val filteredMap = entries.filter { it.key.matches(uri) }
-        if (filteredMap.isEmpty()) {
-            throw IllegalStateException("Path not implemented $uri")
-        }
-        val deepLinkEntry = filteredMap.keys.first()
-        val handler = filteredMap[deepLinkEntry]
-
-        return handler!!.invoke(deepLinkEntry.getParameters(uri))
-    }
+interface Router<REQ, RES> {
+    fun resolve(param: REQ): RES
 }
 
-typealias RouterHandler<T> = (Map<String, String>) -> T
+typealias RouterHandler<T> = (Any) -> T
 
-fun <T> Router<T>.addEntry(vararg uri: String, handler: RouterHandler<T>) {
-    val deepLinkEntries = uri.map { DeepLinkEntry.parse(it) }
-    deepLinkEntries.forEach {
-        entries[it] = handler
+abstract class SimpleRouter<RES> : Router<Any, RES> {
+
+    private var entries = linkedMapOf<Any, RouterHandler<RES>>()
+
+    fun addEntry(param: Any, handler: RouterHandler<RES>) {
+        entries[param] = handler
+    }
+
+    override fun resolve(param: Any): RES {
+        val entry = entries[param] ?: throw IllegalStateException("No entry for parameter $param")
+        return entry.invoke(param)
     }
 }

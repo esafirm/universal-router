@@ -3,7 +3,7 @@ package nolambda.linkrouter
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
-class StringRouter : Router<String>() {
+class StringRouter : UriRouter<String>() {
 
     init {
         addEntry("nolambda://test/{a}/{b}", "https://test/{a}/{b}") {
@@ -13,7 +13,7 @@ class StringRouter : Router<String>() {
         }
     }
 
-    override fun goTo(uri: String) {
+    fun goTo(uri: String) {
         val text = resolve(uri)
         println(text)
     }
