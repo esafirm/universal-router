@@ -17,8 +17,8 @@ buildscript {
 
 ext {
     versions = [
-            compileVersion: 28,
-            minSdkVersion : 19
+            compileSdk: 28,
+            minSdk : 19
     ]
 }
 
