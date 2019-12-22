@@ -6,6 +6,10 @@ abstract class UriRouter<RES> : Router<String, RES> {
 
     internal var entries = linkedMapOf<DeepLinkEntry, UriRouterHandler<RES>>()
 
+    override fun clear() {
+        entries.clear()
+    }
+
     override fun resolve(param: String): RES {
         val filteredMap = entries.filter { it.key.matches(param) }
         if (filteredMap.isEmpty()) {
