@@ -2,8 +2,10 @@ package nolambda.linkrouter
 
 import java.util.regex.Pattern
 
-class DeepLinkEntry private constructor(private val regex: Pattern,
-                                        private val parameters: Set<String>) {
+class DeepLinkEntry private constructor(
+    private val regex: Pattern,
+    private val parameters: Set<String>
+) {
 
     companion object {
         private const val PARAM = "([a-zA-Z][a-zA-Z0-9_-]*)"
@@ -15,16 +17,12 @@ class DeepLinkEntry private constructor(private val regex: Pattern,
         fun parse(url: String): DeepLinkEntry {
             val parsedUri = DeepLinkUri.parse(url)
             val schemeHostAndPath = schemeHostAndPath(parsedUri)
-            val regex = Pattern.compile(schemeHostAndPath.replace(PARAM_REGEX.toRegex(), PARAM_VALUE) + "$");
+            val regex = Pattern.compile(schemeHostAndPath.replace(PARAM_REGEX.toRegex(), PARAM_VALUE) + "$")
             return DeepLinkEntry(regex, parseParameters(parsedUri))
         }
 
         private fun schemeHostAndPath(uri: DeepLinkUri): String {
-            return uri.scheme() + "://" + uri.encodedHost() + parsePath(uri)
-        }
-
-        private fun parsePath(parsedUri: DeepLinkUri): String {
-            return parsedUri.encodedPath()
+            return uri.scheme() + "://" + uri.encodedHost() + uri.encodedPath()
         }
 
         private fun parseParameters(uri: DeepLinkUri): Set<String> {
@@ -51,7 +49,7 @@ class DeepLinkEntry private constructor(private val regex: Pattern,
         if (matcher.matches()) {
             parameters.forEach { key ->
                 val value = matcher.group(i++)
-                if (value != null && "" != value.trim({ it <= ' ' })) {
+                if (value != null && "" != value.trim { it <= ' ' }) {
                     paramsMap[key] = value
                 }
             }

@@ -20,6 +20,15 @@ class DeepLinkUriSpec : StringSpec({
 
         parametes.size shouldBe 0
     }
+
+    "It should handle slash properly" {
+        val deeplink = DeepLinkEntry.parse("nolambda://test/{a}/{b}")
+        val parameters = deeplink.getParameters("nolambda://test/a/b?aaaa")
+
+        parameters.size shouldBe 2
+        parameters["a"] shouldBe "a"
+        parameters["b"] shouldBe "b"
+    }
 })
 
 
