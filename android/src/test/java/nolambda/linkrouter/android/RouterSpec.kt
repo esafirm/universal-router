@@ -12,7 +12,7 @@ object AndroidRoutes {
     object HomeRoute : Route()
     object ProductDetailRoute : Route("nolambda://detail/{product_id}")
     object UserRouter : RouteWithParam<UserRouter.UserParam>(
-        path = "nolambda://user/{user_id}",
+        paths = arrayOf("nolambda://user/{user_id}", "https://nolambda.stream/{user_id}"),
         paramMapper = {
             UserParam(it.optString("user_id"))
         }
@@ -65,6 +65,19 @@ class RouterSpec : StringSpec({
         }
 
         Router.goTo("nolambda://user/1")
+
+        userId shouldBe 1
+    }
+
+    "routing another uri in route should be working" {
+        Router.cleanRouter()
+
+        var userId = 0
+        UserRouter.register {
+            userId = it.rawParam.optInt("user_id", 0)
+        }
+
+        Router.goTo("https://nolambda.stream/1")
 
         userId shouldBe 1
     }

@@ -1,21 +1,23 @@
 package nolambda.linkrouter.android
 
 abstract class BaseRoute<P>(
-    val path: String
+    vararg val routePaths: String
 ) {
     fun register(handler: RouteHandler<P>) {
         Router.register(this, handler)
     }
 }
 
-abstract class Route(path: String = "") : BaseRoute<Unit>(path)
+abstract class Route(
+    vararg paths: String = emptyArray()
+) : BaseRoute<Unit>(*paths)
 
 typealias ParamMapper<T> = (Map<String, String>) -> T
 
 abstract class RouteWithParam<P>(
-    path: String = "",
+    val paths: Array<String> = emptyArray(),
     val paramMapper: ParamMapper<P>? = null
-) : BaseRoute<P>(path) {
+) : BaseRoute<P>(*paths) {
     fun isParamSameWithPath(): Boolean {
         return true
     }

@@ -27,7 +27,7 @@ object Router {
     }
 
     fun <P> register(route: BaseRoute<P>, handler: RouteHandler<P>) {
-        val path = route.path
+        val paths = route.routePaths
 
         // Handle non path
         simpleRouter.addEntry(route) {
@@ -36,15 +36,19 @@ object Router {
         }
 
         // Handle the path
-        if (path.isNotBlank()) {
-            uriRouter.addEntry(path) {
-                if (route is RouteWithParam<P> && route.paramMapper != null) {
-                    handler.invoke(RouteResult(
-                        param = route.paramMapper.invoke(it),
-                        rawParam = it
-                    ))
-                } else {
-                    handler.invoke(RouteResult(rawParam = it))
+        if (paths.isEmpty()) return
+
+        paths.forEach { path ->
+            if (path.isNotBlank()) {
+                uriRouter.addEntry(path) {
+                    if (route is RouteWithParam<P> && route.paramMapper != null) {
+                        handler.invoke(RouteResult(
+                            param = route.paramMapper.invoke(it),
+                            rawParam = it
+                        ))
+                    } else {
+                        handler.invoke(RouteResult(rawParam = it))
+                    }
                 }
             }
         }
