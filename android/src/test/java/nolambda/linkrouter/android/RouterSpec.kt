@@ -5,6 +5,7 @@ import io.kotlintest.specs.StringSpec
 import nolambda.linkrouter.android.AndroidRoutes.HomeRoute
 import nolambda.linkrouter.android.AndroidRoutes.ProductDetailRoute
 import nolambda.linkrouter.android.AndroidRoutes.UserRouter
+import nolambda.linkrouter.optInt
 import nolambda.linkrouter.optString
 
 object AndroidRoutes {
@@ -36,7 +37,7 @@ class RouterSpec : StringSpec({
     "routing with uri should be working" {
         var productId = 0
         ProductDetailRoute.register {
-            productId = it.rawParam.getOrDefault("product_id", "0").toInt()
+            productId = it.rawParam.optInt("product_id", 0)
         }
 
         Router.goTo("nolambda://detail/1")
@@ -56,10 +57,24 @@ class RouterSpec : StringSpec({
     }
 
     "routing with uri in route with param should be working" {
-        var userId = 0
         Router.cleanRouter()
+
+        var userId = 0
         UserRouter.register {
-            userId = it.rawParam["user_id"]?.toInt() ?: 0
+            userId = it.rawParam.optInt("user_id", 0)
+        }
+
+        Router.goTo("nolambda://user/1")
+
+        userId shouldBe 1
+    }
+
+    "param mapper should be working" {
+        Router.cleanRouter()
+
+        var userId = 0
+        UserRouter.register {
+            userId = it.param!!.userId.toInt()
         }
 
         Router.goTo("nolambda://user/1")

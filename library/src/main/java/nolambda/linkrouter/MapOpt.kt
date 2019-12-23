@@ -14,13 +14,14 @@ fun Map<String, String>.optLong(key: String, defaultValue: Long = 0L): Long =
         }
     } else defaultValue
 
-fun Map<String, String>.optInt(key: String): Int = if (containsKey(key)) {
-    try {
-        get(key)?.toInt() ?: 0
-    } catch (ex: Exception) {
-        0
-    }
-} else 0
+fun Map<String, String>.optInt(key: String, defaultValue: Int = 0): Int =
+    if (containsKey(key)) {
+        try {
+            get(key)?.toInt() ?: defaultValue
+        } catch (ex: Exception) {
+            defaultValue
+        }
+    } else defaultValue
 
 fun Map<String, String>.optFloat(key: String, defaultValue: Float = 0.0F): Float =
     if (containsKey(key)) {
