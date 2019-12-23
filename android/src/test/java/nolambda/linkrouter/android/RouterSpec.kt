@@ -2,12 +2,20 @@ package nolambda.linkrouter.android
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
-import nolambda.linkrouter.android.AndroidRoutes as R
+import nolambda.linkrouter.android.AndroidRoutes.HomeRoute
+import nolambda.linkrouter.android.AndroidRoutes.ProductDetailRoute
+import nolambda.linkrouter.android.AndroidRoutes.UserRouter
+import nolambda.linkrouter.optString
 
 object AndroidRoutes {
     object HomeRoute : Route()
     object ProductDetailRoute : Route("nolambda://detail/{product_id}")
-    object UserRouter : RouteWithParam<UserRouter.UserParam>("nolambda://user/{user_id}") {
+    object UserRouter : RouteWithParam<UserRouter.UserParam>(
+        path = "nolambda://user/{user_id}",
+        paramMapper = {
+            UserParam(it.optString("user_id"))
+        }
+    ) {
         data class UserParam(val userId: String)
     }
 }
@@ -16,19 +24,19 @@ class RouterSpec : StringSpec({
 
     "routing should be working" {
         var homeState = false
-        R.HomeRoute.register {
+        HomeRoute.register {
             homeState = true
         }
 
-        Router.push(R.HomeRoute)
+        Router.push(HomeRoute)
 
         homeState shouldBe true
     }
 
     "routing with uri should be working" {
         var productId = 0
-        R.ProductDetailRoute.register {
-            productId = it.mapParam["product_id"]?.toInt() ?: 0
+        ProductDetailRoute.register {
+            productId = it.rawParam.getOrDefault("product_id", "0").toInt()
         }
 
         Router.goTo("nolambda://detail/1")
@@ -38,11 +46,11 @@ class RouterSpec : StringSpec({
 
     "routing with parameter should be working" {
         var userId = 0
-        R.UserRouter.register {
+        UserRouter.register {
             userId = it.param?.userId?.toInt() ?: 0
         }
 
-        Router.push(R.UserRouter, R.UserRouter.UserParam("1"))
+        Router.push(UserRouter, UserRouter.UserParam("1"))
 
         userId shouldBe 1
     }
@@ -50,8 +58,8 @@ class RouterSpec : StringSpec({
     "routing with uri in route with param should be working" {
         var userId = 0
         Router.cleanRouter()
-        R.UserRouter.register {
-            userId = it.mapParam["user_id"]?.toInt() ?: 0
+        UserRouter.register {
+            userId = it.rawParam["user_id"]?.toInt() ?: 0
         }
 
         Router.goTo("nolambda://user/1")

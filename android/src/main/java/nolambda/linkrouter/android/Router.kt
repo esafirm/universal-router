@@ -8,7 +8,7 @@ typealias RouteHandler<T> = (RouteResult<T>) -> Unit
 
 class RouteResult<T>(
     val param: T? = null,
-    val mapParam: Map<String, String>
+    val rawParam: Map<String, String>
 )
 
 object Router {
@@ -19,7 +19,7 @@ object Router {
     private val uriRouter = AndroidUriRouter
 
     private val EMPTY_PARAMETER = emptyMap<String, String>()
-    private val EMPTY_RESULT = RouteResult<Unit>(mapParam = EMPTY_PARAMETER)
+    private val EMPTY_RESULT = RouteResult<Unit>(rawParam = EMPTY_PARAMETER)
 
     fun cleanRouter() {
         simpleRouter.clear()
@@ -38,7 +38,14 @@ object Router {
         // Handle the path
         if (path.isNotBlank()) {
             uriRouter.addEntry(path) {
-                handler.invoke(RouteResult(mapParam = it))
+                if (route is RouteWithParam<P> && route.paramMapper != null) {
+                    handler.invoke(RouteResult(
+                        param = route.paramMapper.invoke(it),
+                        rawParam = it
+                    ))
+                } else {
+                    handler.invoke(RouteResult(rawParam = it))
+                }
             }
         }
     }
@@ -50,7 +57,7 @@ object Router {
     fun <P> push(route: RouteWithParam<P>, param: P) {
         simpleRouter.resolve(route).invoke(RouteResult(
             param = param,
-            mapParam = EMPTY_PARAMETER
+            rawParam = EMPTY_PARAMETER
         ))
     }
 

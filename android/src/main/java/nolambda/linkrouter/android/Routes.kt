@@ -10,8 +10,11 @@ abstract class BaseRoute<P>(
 
 abstract class Route(path: String = "") : BaseRoute<Unit>(path)
 
+typealias ParamMapper<T> = (Map<String, String>) -> T
+
 abstract class RouteWithParam<P>(
-    path: String = ""
+    path: String = "",
+    val paramMapper: ParamMapper<P>? = null
 ) : BaseRoute<P>(path) {
     fun isParamSameWithPath(): Boolean {
         return true
