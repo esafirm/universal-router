@@ -1,15 +1,20 @@
-# link-router
+# Universal Router
 
-In modular apps, we often can't address and initiate our screen component or whatever by their `Class` simply because our module we currently working on doesn't depends on the other module. To solve this problem we often create a "gateway"/"router"  for our classes. 
+> *Router for every ocassion ~*
 
-So what link-router does is just convert your URI to whatever you need
+Universal router comes with two flavor, the core module which basically a link router that can convert your URI to whatever you need. And the Android module which more opionated to how you can use it to help you solve your navigation problem
 
-## Usage 
+## Core
 
-Define a `Router`
+It basically consist of two router
+1. `SimpleRouter` which route `Any` type of object to anything you need
+2. `UrlRouter` which takes URI instead of object
+
+### Some Examples
 
 ```kotlin
-class StringRouter : Router<String>() {
+// Define router
+class StringRouter : UrlRouter<String>() {
 
     init {
         addEntry("nolambda://test/{a}/{b}", "https://test/{a}/{b}") {
@@ -18,31 +23,24 @@ class StringRouter : Router<String>() {
             "$second came to the wrong neighborhood $first"
         }
     }
-
-    override fun goTo(uri: String) {
-        val text = resolve(uri)
-        println(text)
-    }
 }
-```
 
-Get what you need 
-
-```kotlin
-stringRouter.resolve("nolambda://test/bro/you") shouldBe "you came to the wrong neighborhood bro"
+// Call router
+// This will return string "you can to the wrong neighborhood yo"
+StringRouter().resolve("nolambda://test/yo/you") 
 ```
 
 For more sample, plese look at the `sample` module or the test i created. 
 
-## Implementation in Modular Android Projects
+## Android
 
-The easiest way would be
+Basically with just the `core` module you already can have a navigation system in your modular structured application (think dynamic module use case). The easiest way would be creating a `Singleton` router in your "core" module and then add entries in every other module, but this can get quite messy sometimes
+
+So this is when the android router module comes in
+
+```kotlin
 
 ```
-Create the router as a Singleton in your "core" dependencies, add your entries in every module
-```
-
-I'm sure you can find others implementation
 
 ## License 
 
