@@ -1,6 +1,8 @@
 package nolambda.linkrouter.examples
 
 import androidx.fragment.app.Fragment
+import nolambda.linkrouter.UriRouter
+import nolambda.linkrouter.addEntry
 
 class FragmentRouter(private val activity: MainActivity) : UriRouter<Fragment>() {
 

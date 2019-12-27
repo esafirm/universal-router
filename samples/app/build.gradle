@@ -24,4 +24,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    implementation 'com.github.esafirm.universal-router:android:1.0.1'
+    implementation 'com.github.esafirm.universal-router:core:1.0.1'
 }
