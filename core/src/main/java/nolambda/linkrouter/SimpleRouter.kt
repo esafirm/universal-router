@@ -1,6 +1,6 @@
 package nolambda.linkrouter
 
-interface Router<REQ, RES> {
+internal interface Router<REQ, RES> {
     fun clear()
     fun resolve(param: REQ): RES
 }
