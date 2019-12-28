@@ -2,7 +2,7 @@
 
 > Router for every ocassion ~
 
-Universal router comes with two flavor, the core module which basically a link router that can convert your URI to whatever you need. And the Android module which more opionated to how you can use it to help you solve your navigation problem
+Universal router comes with two flavor, the core module which basically a link router that can convert your URI to whatever you need. And the Android module which more opinionated to how you can use it to help you solve your navigation problem
 
 ## Download
 
