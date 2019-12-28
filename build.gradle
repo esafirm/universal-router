@@ -24,6 +24,8 @@ ext {
 }
 
 allprojects {
+    group = 'universal.router'
+
     repositories {
         google()
         jcenter()

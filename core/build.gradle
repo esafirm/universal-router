@@ -38,7 +38,7 @@ compileTestKotlin {
     }
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
+task sourcesJar(type: Jar) {
     archiveClassifier.set('sources')
     from sourceSets.main.allSource
 }
@@ -53,7 +53,8 @@ artifacts {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.squareup.okio:okio:1.14.0'
+
+    implementation 'com.squareup.okio:okio:2.2.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.0'
 }
