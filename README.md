@@ -1,6 +1,6 @@
 # Universal Router
 
-> *Router for every ocassion ~*
+> Router for every ocassion ~
 
 Universal router comes with two flavor, the core module which basically a link router that can convert your URI to whatever you need. And the Android module which more opionated to how you can use it to help you solve your navigation problem
 
@@ -56,9 +56,7 @@ StringRouter().resolve("nolambda://test/yo/you")
 
 ## Android
 
-Basically with just the `core` module you already can have a navigation system in your modular structured application (think dynamic module use case). The easiest way would be creating a `Singleton` router in your "core" module and then add entries in every other module, but this can get quite messy sometimes
-
-So this is when the android router module comes in. 
+Basically with just the `core` module you already can have a navigation system in your modular structured application (think dynamic module use case). The easiest way would be creating a `Singleton` router in your "core" module and then add entries in every other module, but this can get quite messy sometimes, this is when the android router module comes in. 
 
 First let's define our project structure:
 
@@ -73,6 +71,8 @@ project
 │
 └── approuter // Router libs that every module depends
 ```
+
+> In dynamic module use case the `cart` and `product` module would be depends the `app` module
 
 Next what you want to create is the list of the routes in the "router" module, in this case `approuter`
 
