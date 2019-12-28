@@ -94,4 +94,38 @@ class RouterSpec : StringSpec({
 
         userId shouldBe 1
     }
+
+    "processor invoked when the type is right" {
+        Router.cleanRouter()
+
+        open class Parent
+        class Child : Parent()
+
+        var stringInvoked = false
+        var intInvoked = false
+        var childInvoked = false
+
+        val returnedString = "This is home route"
+        val returnedChild = Child()
+
+        HomeRoute.register { returnedString }
+        ProductDetailRoute.register { returnedChild }
+
+        Router.addProcessor<String> {
+            stringInvoked = true
+            it shouldBe returnedString
+        }
+        Router.addProcessor<Int> { intInvoked = true }
+        Router.addProcessor<Child> {
+            childInvoked = true
+            it shouldBe returnedChild
+        }
+
+        Router.push(HomeRoute)
+        Router.push(ProductDetailRoute)
+
+        stringInvoked shouldBe true
+        intInvoked shouldBe false
+        childInvoked shouldBe true
+    }
 })

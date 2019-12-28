@@ -3,7 +3,7 @@ package nolambda.linkrouter.android
 abstract class BaseRoute<P>(
     vararg val routePaths: String
 ) {
-    fun register(handler: RouteHandler<P>) {
+    fun <R> register(handler: RouteHandler<P, R>) {
         Router.register(this, handler)
     }
 }
