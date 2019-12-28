@@ -12,8 +12,8 @@ class RouteResult<T>(
 )
 
 object Router {
-    object AndroidSimpleRouter : SimpleRouter<RouteHandler<*>>()
-    object AndroidUriRouter : UriRouter<Unit>()
+    private object AndroidSimpleRouter : SimpleRouter<RouteHandler<*>>()
+    private object AndroidUriRouter : UriRouter<Unit>()
 
     private val simpleRouter = AndroidSimpleRouter
     private val uriRouter = AndroidUriRouter

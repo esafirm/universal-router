@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="nolambda.linkrouter.cart">
+
+    <application>
+        <provider
+            android:name=".CartRouterInitializer"
+            android:authorities="nolambda.router.cart" />
+    </application>
+
+</manifest>

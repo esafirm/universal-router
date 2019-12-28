@@ -1,10 +1,12 @@
 package nolambda.linkrouter.examples
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
-import nolambda.linkrouter.examples.FragmentRouter
+import kotlinx.android.synthetic.main.activity_main_simple.*
+import nolambda.linkrouter.examples.notsimple.NotSimpleActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -12,18 +14,24 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_simple)
 
-        val handler = Handler(Looper.getMainLooper())
+        btnNavigate.setOnClickListener {
+            startActivity(Intent(applicationContext, NotSimpleActivity::class.java))
+        }
 
-        router.goTo("sample://fragment/first")
+        btnNavigateTwo.setOnClickListener {
+            router.goTo("sample://fragment/first")
 
-        handler.postDelayed({
-            router.goTo("sample://fragment/second")
-        }, 2000)
+            val handler = Handler(Looper.getMainLooper())
 
-        handler.postDelayed({
-            router.goTo("sample://fragment/third")
-        }, 5000)
+            handler.postDelayed({
+                router.goTo("sample://fragment/second")
+            }, 2000)
+
+            handler.postDelayed({
+                router.goTo("sample://fragment/third")
+            }, 5000)
+        }
     }
 }

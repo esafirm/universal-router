@@ -21,8 +21,9 @@ android {
 }
 
 dependencies {
-    implementation 'universal.router:core:unspecified'
-    implementation 'universal.router:android:unspecified'
+    implementation project(':approuter')
+    implementation project(':cart')
+    implementation project(':product')
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

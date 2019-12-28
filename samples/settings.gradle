@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':product', ':cart', ':approuter'
 rootProject.name='Example'
