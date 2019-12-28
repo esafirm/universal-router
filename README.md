@@ -4,6 +4,28 @@
 
 Universal router comes with two flavor, the core module which basically a link router that can convert your URI to whatever you need. And the Android module which more opionated to how you can use it to help you solve your navigation problem
 
+## Download
+
+Add this to your project `build.gradle`
+
+```groovy
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
+}
+```
+
+And add this to your module `build.gradle`
+
+```groovy
+dependencies {
+    implementation 'universal.router:core:<version>'
+    // Android specific
+    implementation 'universal.router:android:<version>'
+}
+```
+
 ## Core
 
 It basically consist of two router
@@ -128,6 +150,7 @@ And that's it you got yourself a navigation system.
 
 - [ ] Helper module for reflection based router initializer
 - [ ] Navigation type (push, replace, pop)
+- [ ] Middleware / Interceptor
 
 ## License 
 
