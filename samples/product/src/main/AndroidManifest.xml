@@ -3,8 +3,12 @@
 
     <application>
         <provider
+            android:name=".ProductRouterInitializer"
+            android:authorities="nolambda.linkrouter.product"
+            android:exported="false" />
+        <provider
             android:name="nolambda.linkrouter.product.ProductRouterInitializer"
-            android:authorities="nolambda.router.product"
+            android:authorities="nolambda.linkrouter.product"
             android:exported="false" />
     </application>
 

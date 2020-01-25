@@ -6,6 +6,7 @@ import org.xml.sax.InputSource
 import java.io.File
 import java.io.StringWriter
 import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.transform.OutputKeys
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
@@ -59,7 +60,11 @@ class ManifestWriter(
         val writer = StringWriter()
         val result = StreamResult(writer)
         val tf = TransformerFactory.newInstance()
-        val transformer = tf.newTransformer()
+        val transformer = tf.newTransformer().apply {
+            setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes")
+            setOutputProperty(OutputKeys.ENCODING, "UTF-8")
+            setOutputProperty(OutputKeys.INDENT, "yes")
+        }
         transformer.transform(domSource, result)
         return writer.toString()
     }

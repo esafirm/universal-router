@@ -6,10 +6,13 @@ import java.io.File
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
+import javax.annotation.processing.SupportedSourceVersion
+import javax.lang.model.SourceVersion
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor::class)
 class AppInitProcessor : AbstractProcessor() {
 
@@ -19,7 +22,7 @@ class AppInitProcessor : AbstractProcessor() {
     }
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
-        return mutableSetOf(AppInitProcessor::class.java.name)
+        return mutableSetOf(AppInit::class.java.name)
     }
 
     override fun process(
@@ -29,16 +32,15 @@ class AppInitProcessor : AbstractProcessor() {
         val providers = mutableListOf<ProviderNode>()
 
         env.getElementsAnnotatedWith(AppInit::class.java).forEach { el ->
-            if (el.kind != ElementKind.CLASS || el.kind != ElementKind.METHOD) {
-                processingEnv.messager.printMessage(
-                    Diagnostic.Kind.ERROR,
+            if (el.kind != ElementKind.CLASS) {
+                printError(
                     "Annotation can only be applied to content provider or method"
                 )
                 return false
             }
 
-            val className = el.simpleName.toString()
             val pack = processingEnv.elementUtils.getPackageOf(el).toString()
+            val className = "${pack}.${el.simpleName}"
 
             providers.add(
                 ProviderNode(className, pack)
@@ -49,11 +51,28 @@ class AppInitProcessor : AbstractProcessor() {
         return true
     }
 
-    private fun generatedXml(providers: List<ProviderNode>) {
-        val manifestPath = processingEnv.options[OPTION_ANDROID_MANIFEST]
+    private fun printError(error: String) {
+        processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, error)
+    }
 
-        val output = File(manifestPath, ANDROID_MANIFEST_XML)
-        val input = File(manifestPath, ANDROID_MANIFEST_XML)
+    private fun printWarning(warning: String) {
+        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, warning)
+    }
+
+    private fun generatedXml(providers: List<ProviderNode>) {
+        val manifestPath = processingEnv.options[OPTION_ANDROID_MANIFEST]!!
+        val input = File(manifestPath)
+        val dir = input.parentFile.absolutePath
+
+        providers.forEach {
+            printWarning(
+                """
+                Provider: ${it.className}
+            """.trimIndent()
+            )
+        }
+
+        val output = File(dir, ANDROID_MANIFEST_XML)
         val writer = ManifestWriter(
             input.absoluteFile,
             providers
