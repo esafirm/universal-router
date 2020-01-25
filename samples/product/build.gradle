@@ -16,25 +16,32 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
-    }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        javaCompileOptions {
+            annotationProcessorOptions.arguments = [
+                    'AndroidManifestPath': project.android.sourceSets.main.manifest.srcFile.absolutePath
+            ]
         }
+
+        buildTypes {
+            release {
+                minifyEnabled false
+                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            }
+        }
+
     }
 
-}
+    dependencies {
+        implementation fileTree(dir: 'libs', include: ['*.jar'])
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+        implementation 'androidx.appcompat:appcompat:1.1.0'
+        implementation 'androidx.core:core-ktx:1.1.0'
+        implementation project(':approuter')
 
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.1.0'
-    implementation project(':approuter')
+        implementation project(':annotations')
+        kapt project(':processor')
 
-    kapt project(':processor')
-
-    testImplementation 'junit:junit:4.12'
+        testImplementation 'junit:junit:4.12'
+    }
 }

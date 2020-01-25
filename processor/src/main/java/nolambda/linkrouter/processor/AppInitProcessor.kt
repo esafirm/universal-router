@@ -15,6 +15,7 @@ class AppInitProcessor : AbstractProcessor() {
 
     companion object {
         private const val ANDROID_MANIFEST_XML = "AndroidManifest.xml"
+        private const val OPTION_ANDROID_MANIFEST = "AndroidManifestPath"
     }
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
@@ -49,8 +50,10 @@ class AppInitProcessor : AbstractProcessor() {
     }
 
     private fun generatedXml(providers: List<ProviderNode>) {
-        val output = File("src/generated", ANDROID_MANIFEST_XML)
-        val input = File("src/main/java", ANDROID_MANIFEST_XML)
+        val manifestPath = processingEnv.options[OPTION_ANDROID_MANIFEST]
+
+        val output = File(manifestPath, ANDROID_MANIFEST_XML)
+        val input = File(manifestPath, ANDROID_MANIFEST_XML)
         val writer = ManifestWriter(
             input.absoluteFile,
             providers
