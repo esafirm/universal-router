@@ -32,6 +32,6 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.1.0'
 
     // Router deps
-    api 'universal.router:core:unspecified'
-    api 'universal.router:android:unspecified'
+    api project(':core')
+    api project(':android')
 }
