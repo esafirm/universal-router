@@ -9,7 +9,8 @@ class RouteInitGeneratorSpec : StringSpec({
         val nodes = listOf(
             RouteInitNode(
                 "ProductInit",
-                "com.something"
+                "com.something",
+                "String"
             )
         )
 
@@ -24,7 +25,7 @@ class RouteInitGeneratorSpec : StringSpec({
 
         val text = dest.readText()
 
-        text.contains("class RouteInit") shouldBe true
+        text.contains("class StringRouteInit") shouldBe true
         text.contains("ProductInit::class.java.newInstance().onInit(appContext)") shouldBe true
         text.contains("import android.content.Context") shouldBe true
         text.contains("import com.something.ProductInit") shouldBe true

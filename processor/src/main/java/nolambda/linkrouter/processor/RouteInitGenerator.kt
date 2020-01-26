@@ -8,7 +8,7 @@ class RouteInitGenerator(
 ) {
 
     companion object {
-        private const val FILE_NAME = "RouteInit.kt"
+        private const val FILE_SUFFIX = "RouteInit.kt"
         private const val PACKAGE = "nolambda/init/route"
     }
 
@@ -18,28 +18,27 @@ class RouteInitGenerator(
 
         if (!realDest.exists()) realDest.mkdirs()
 
-        val file = File(realDest, FILE_NAME)
-        file.writeText(createClass(packageName))
+        routeInits.forEach {
+            val name = "${it.routeName}$FILE_SUFFIX"
+            val file = File(realDest, name)
+            file.writeText(createClass(packageName, it, it.routeName))
+        }
     }
 
-    private fun createClass(packageName: String): String {
-        val imports = routeInits.joinToString("\n") {
-            "import ${it.packageName}.${it.className}"
-        }
-
-        val initScripts = routeInits.joinToString("\n") {
-            "${it.className}::class.java.newInstance().onInit(appContext)"
-        }
-
+    private fun createClass(
+        packageName: String,
+        node: RouteInitNode,
+        identifier: String
+    ): String {
         return """
         package $packageName
         
         import android.content.Context
-        $imports
+        import ${node.packageName}.${node.className}
         
-        internal class RouteInit(private val appContext: Context) {
+        class ${identifier}RouteInit(private val appContext: Context) {
              init {
-                $initScripts
+                ${node.className}::class.java.newInstance().onInit(appContext)
              }
         }
         """.trimIndent()
