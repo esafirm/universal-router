@@ -1,6 +1,6 @@
 package nolambda.linkrouter.processor
 
-data class ProviderNode(
+data class RouteInitNode(
     val className: String,
-    val authorities: String
+    val packageName: String
 )
