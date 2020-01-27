@@ -19,16 +19,19 @@ class RouteInitGenerator(
         if (!realDest.exists()) realDest.mkdirs()
 
         routeInits.forEach {
-            val name = "${it.routeName}$FILE_SUFFIX"
+            val routeClass = it.routeClass
+            val identifier = routeClass.substring(routeClass.lastIndexOf(".") + 1)
+            val name = "${identifier}$FILE_SUFFIX"
             val file = File(realDest, name)
-            file.writeText(createClass(packageName, it, it.routeName))
+            file.writeText(createClass(packageName, it, identifier, routeClass))
         }
     }
 
     private fun createClass(
         packageName: String,
         node: RouteInitNode,
-        identifier: String
+        routeIdentifier: String,
+        routeClass: String
     ): String {
         return """
         package $packageName
@@ -36,7 +39,7 @@ class RouteInitGenerator(
         import android.content.Context
         import ${node.packageName}.${node.className}
         
-        class ${identifier}RouteInit(private val appContext: Context) {
+        class ${routeIdentifier}RouteInit(private val appContext: Context) {
              init {
                 ${node.className}::class.java.newInstance().onInit(appContext)
              }

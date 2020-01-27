@@ -46,7 +46,7 @@ class RouteInitProcessor : AbstractProcessor() {
             val annotation = el.getAnnotation(Navigate::class.java)
             val pack = processingEnv.elementUtils.getPackageOf(el).toString()
             routeInits.add(
-                RouteInitNode(el.simpleName.toString(), pack, getRouteName(annotation))
+                RouteInitNode(el.simpleName.toString(), pack, getRouteClass(annotation))
             )
         }
 
@@ -57,12 +57,11 @@ class RouteInitProcessor : AbstractProcessor() {
         return true
     }
 
-    private fun getRouteName(navigate: Navigate): String {
+    private fun getRouteClass(navigate: Navigate): String {
         return try {
             navigate.route.simpleName!!
         } catch (mte: MirroredTypeException) {
-            val fullType = mte.typeMirror.toString()
-            fullType.substring(fullType.lastIndexOf(".") + 1)
+            mte.typeMirror.toString()
         }
     }
 

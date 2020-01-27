@@ -25,6 +25,8 @@ object Router {
     private val simpleRouter = AndroidSimpleRouter
     private val uriRouter = AndroidUriRouter
 
+    private val autoRegister by lazy { RouteAutoRegister(RouterPlugin) }
+
     private val EMPTY_PARAMETER = emptyMap<String, String>()
     private val EMPTY_RESULT = RouteResult<Unit>(rawParam = EMPTY_PARAMETER)
 
@@ -86,31 +88,37 @@ object Router {
             if (path.isNotBlank()) {
                 uriRouter.addEntry(path) {
                     val result = if (route is RouteWithParam<P> && route.paramMapper != null) {
-                        handler.invoke(RouteResult(
-                            param = route.paramMapper.invoke(it),
-                            rawParam = it
-                        ))
+                        handler.invoke(
+                            RouteResult(
+                                param = route.paramMapper.invoke(it),
+                                rawParam = it
+                            )
+                        )
                     } else {
                         handler.invoke(RouteResult(rawParam = it))
                     }
-                    invokProcessor(result)
+                    invokeProcessor(result)
                 }
             }
         }
     }
 
     fun <P> push(route: BaseRoute<P>) {
-        invokProcessor(
+        autoRegister.registerScreenIfNeeded(route)
+        invokeProcessor(
             simpleRouter.resolve(route).invoke(EMPTY_RESULT)
         )
     }
 
     fun <P> push(route: RouteWithParam<P>, param: P) {
-        invokProcessor(
-            simpleRouter.resolve(route).invoke(RouteResult(
-                param = param,
-                rawParam = EMPTY_PARAMETER
-            ))
+        autoRegister.registerScreenIfNeeded(route)
+        invokeProcessor(
+            simpleRouter.resolve(route).invoke(
+                RouteResult(
+                    param = param,
+                    rawParam = EMPTY_PARAMETER
+                )
+            )
         )
     }
 
@@ -118,7 +126,7 @@ object Router {
         uriRouter.resolve(uri)
     }
 
-    private fun invokProcessor(result: Any?) {
+    private fun invokeProcessor(result: Any?) {
         if (result == null) return
         if (processors.isEmpty()) return
 

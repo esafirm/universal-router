@@ -20,7 +20,7 @@ class RouteInitGeneratorSpec : StringSpec({
         val generator = RouteInitGenerator(temp.absolutePath, nodes)
         generator.generate()
 
-        val dest = File("${temp.absoluteFile}/nolambda/init/route/RouteInit.kt")
+        val dest = File("${temp.absoluteFile}/nolambda/init/route/StringRouteInit.kt")
         dest.exists() shouldBe true
 
         val text = dest.readText()
@@ -29,5 +29,7 @@ class RouteInitGeneratorSpec : StringSpec({
         text.contains("ProductInit::class.java.newInstance().onInit(appContext)") shouldBe true
         text.contains("import android.content.Context") shouldBe true
         text.contains("import com.something.ProductInit") shouldBe true
+
+        dest.delete()
     }
 })
