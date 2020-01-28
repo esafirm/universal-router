@@ -150,9 +150,8 @@ And that's it you got yourself a navigation system.
 
 ## What's Next
 
-- [ ] Helper module for reflection based router initializer
-- [ ] Navigation type (push, replace, pop)
-- [ ] Middleware / Interceptor
+- Navigation type (push, replace, pop)
+- Middleware / Interceptor
 
 ## License 
 

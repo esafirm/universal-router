@@ -1,2 +1,14 @@
-include ':app', ':product', ':cart', ':approuter'
 rootProject.name='Example'
+
+def includeUpper(name){
+    final projectName = ":${name}"
+    include projectName
+    project(projectName).projectDir = new  File(settingsDir, "../$name")
+}
+
+include ':app', ':product', ':cart', ':approuter'
+
+includeUpper('annotations')
+includeUpper('processor')
+includeUpper('android')
+includeUpper('core')
