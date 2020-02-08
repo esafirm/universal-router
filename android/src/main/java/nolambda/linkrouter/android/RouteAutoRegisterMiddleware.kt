@@ -5,16 +5,16 @@ import android.util.Log
 
 typealias NameResolver = (String) -> String
 
-class RouteAutoRegister(
+class RouteAutoRegisterMiddleware(
     private val plugin: RouterPlugin,
     private val nameResolver: NameResolver = { name -> "nolambda.init.route.${name}" }
-) {
+) : Middleware {
 
     companion object {
         private const val TAG = "RouteAutoRegister"
     }
 
-    fun registerScreenIfNeeded(route: BaseRoute<*>) {
+    override fun onRouting(route: BaseRoute<*>, param: Any?) {
         if (plugin.isUseAnnotationProcessor.not()) return
         val name = "${route.javaClass.simpleName}RouteInit"
         val fullClassName = nameResolver(name)
