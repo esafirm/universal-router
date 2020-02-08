@@ -8,11 +8,14 @@ class AppRoutes {
     object Home : Route()
     object Cart : Route("app://cart")
     object Product : RouteWithParam<Product.ProductParam>(
-        paths = arrayOf("app://product/{id}"),
-        paramMapper = { ProductParam(it.optString("id", "")) }
+        "app://product/{id}"
     ) {
         data class ProductParam(
             val productId: String
         )
+
+        override fun mapParameter(raw: Map<String, String>): ProductParam {
+            return ProductParam(raw.optString("id", ""))
+        }
     }
 }

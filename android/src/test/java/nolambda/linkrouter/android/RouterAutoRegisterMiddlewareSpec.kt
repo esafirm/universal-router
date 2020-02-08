@@ -7,10 +7,10 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 
-class RouterAutoRegisterSpec : StringSpec({
+class RouterAutoRegisterMiddlewareSpec : StringSpec({
     val mockPlugin = mockk<RouterPlugin>(relaxed = true)
     val mockNameResolver = mockk<NameResolver>(relaxed = true)
-    val routeAutoRegister = RouteAutoRegister(mockPlugin, mockNameResolver)
+    val routeAutoRegister = RouteAutoRegisterMiddleware(mockPlugin, mockNameResolver)
 
     val nameSlot = slot<String>()
     every {
@@ -21,7 +21,7 @@ class RouterAutoRegisterSpec : StringSpec({
 
     "It should not register if the annotation is false" {
         every { mockPlugin.isUseAnnotationProcessor } returns false
-        routeAutoRegister.registerScreenIfNeeded(TestRoute())
+        routeAutoRegister.onRouting(TestRoute(), null)
 
         verify(exactly = 0) {
             mockNameResolver.invoke(any())
@@ -30,7 +30,7 @@ class RouterAutoRegisterSpec : StringSpec({
 
     "It should resolve and invoke init" {
         every { mockPlugin.isUseAnnotationProcessor } returns true
-        routeAutoRegister.registerScreenIfNeeded(TestRoute())
+        routeAutoRegister.onRouting(TestRoute(), null)
 
         verify(exactly = 1) {
             mockNameResolver.invoke(any())

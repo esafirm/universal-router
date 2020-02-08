@@ -12,13 +12,12 @@ abstract class Route(
     vararg paths: String = emptyArray()
 ) : BaseRoute<Unit>(*paths)
 
-typealias ParamMapper<T> = (Map<String, String>) -> T
-
 abstract class RouteWithParam<P>(
-    val paths: Array<String> = emptyArray(),
-    val paramMapper: ParamMapper<P>? = null
+    vararg paths: String = emptyArray()
 ) : BaseRoute<P>(*paths) {
     fun isParamSameWithPath(): Boolean {
         return true
     }
+
+    abstract fun mapParameter(raw: Map<String, String>): P
 }

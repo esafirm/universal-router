@@ -2,21 +2,14 @@
 
 package nolambda.linkrouter.android
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
 import nolambda.linkrouter.SimpleRouter
 import nolambda.linkrouter.UriRouter
 import nolambda.linkrouter.addEntry
 
-typealias RouteHandler<P, R> = (RouteResult<P>) -> R
+typealias RouteHandler<P, R> = (RouteParam<P>) -> R
 typealias RouteProcessor<T> = (T) -> Unit
 
-class RouteResult<T>(
-    val param: T? = null,
-    val rawParam: Map<String, String>
-)
+class RouteParam<T>(val param: T? = null)
 
 object Router {
     private object AndroidSimpleRouter : SimpleRouter<RouteHandler<*, *>>()
@@ -25,12 +18,18 @@ object Router {
     private val simpleRouter = AndroidSimpleRouter
     private val uriRouter = AndroidUriRouter
 
-    private val autoRegister by lazy { RouteAutoRegister(RouterPlugin) }
+    private val EMPTY_PARAM = RouteParam<Unit>()
 
-    private val EMPTY_PARAMETER = emptyMap<String, String>()
-    private val EMPTY_RESULT = RouteResult<Unit>(rawParam = EMPTY_PARAMETER)
-
+    private val middlewares = linkedSetOf<Middleware>()
     private val processors = linkedSetOf<Pair<Class<*>, RouteProcessor<in Any>>>()
+
+    init {
+        addMiddleware(RouteAutoRegisterMiddleware(RouterPlugin))
+    }
+
+    /* --------------------------------------------------- */
+    /* > Component setup */
+    /* --------------------------------------------------- */
 
     fun cleanRouter() {
         simpleRouter.clear()
@@ -50,27 +49,17 @@ object Router {
         addProcessor(T::class.java, processor)
     }
 
-    inline fun <reified T> addProcessorWithLifecycle(
-        lifecycleOwner: LifecycleOwner,
-        noinline processor: RouteProcessor<T>
-    ) {
-        val lifecycle = lifecycleOwner.lifecycle
-        lifecycle.addObserver(object : LifecycleObserver {
-            @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-            fun onCreate() {
-                addProcessor(processor)
-            }
-
-            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-            fun onDestroy() {
-                removeProcessor(processor)
-            }
-        })
-
-        if (lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
-            addProcessor(processor)
-        }
+    fun addMiddleware(middleware: Middleware) {
+        middlewares.add(middleware)
     }
+
+    fun removeMiddleware(middleware: Middleware) {
+        middlewares.remove(middleware)
+    }
+
+    /* --------------------------------------------------- */
+    /* > Processing */
+    /* --------------------------------------------------- */
 
     fun <P, R> register(route: BaseRoute<P>, handler: RouteHandler<P, R>) {
         val paths = route.routePaths
@@ -85,46 +74,40 @@ object Router {
         if (paths.isEmpty()) return
 
         paths.forEach { path ->
-            if (path.isNotBlank()) {
-                uriRouter.addEntry(path) {
-                    val result = if (route is RouteWithParam<P> && route.paramMapper != null) {
-                        handler.invoke(
-                            RouteResult(
-                                param = route.paramMapper.invoke(it),
-                                rawParam = it
-                            )
-                        )
-                    } else {
-                        handler.invoke(RouteResult(rawParam = it))
-                    }
-                    invokeProcessor(result)
+            if (path.isBlank()) return@forEach
+
+            uriRouter.addEntry(path) {
+                val result = if (route is RouteWithParam<P>) {
+                    handler.invoke(RouteParam(route.mapParameter(it)))
+                } else {
+                    handler.invoke(RouteParam())
                 }
+                invokeProcessor(result)
             }
         }
-    }
-
-    fun <P> push(route: BaseRoute<P>) {
-        autoRegister.registerScreenIfNeeded(route)
-        invokeProcessor(
-            simpleRouter.resolve(route).invoke(EMPTY_RESULT)
-        )
-    }
-
-    fun <P> push(route: RouteWithParam<P>, param: P) {
-        autoRegister.registerScreenIfNeeded(route)
-        invokeProcessor(
-            simpleRouter.resolve(route).invoke(
-                RouteResult(
-                    param = param,
-                    rawParam = EMPTY_PARAMETER
-                )
-            )
-        )
     }
 
     fun goTo(uri: String) {
         uriRouter.resolve(uri)
     }
+
+    fun <P> push(route: BaseRoute<P>, param: P? = null) {
+        applyMiddleware(route, param)
+        val result = when (param == null) {
+            true -> EMPTY_PARAM
+            else -> RouteParam(param)
+        }
+        invokeProcessor(simpleResolve(route, result))
+    }
+
+    private fun applyMiddleware(route: BaseRoute<*>, param: Any?) {
+        middlewares.forEach {
+            it.onRouting(route, param)
+        }
+    }
+
+    private fun simpleResolve(route: BaseRoute<*>, param: RouteParam<*>) =
+        simpleRouter.resolve(route).invoke(param)
 
     private fun invokeProcessor(result: Any?) {
         if (result == null) return
