@@ -69,7 +69,7 @@ project
 │
 ├── cart // Feature cart, only depends to router
 │
-├── product // Feature prodduct, only depends to router
+├── product // Feature product, only depends to router
 │
 └── approuter // Router libs that every module depends
 ```
