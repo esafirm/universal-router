@@ -1,7 +1,6 @@
 package nolambda.linkrouter.processor
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import java.io.File
 
 class RouteInitGeneratorSpec : StringSpec({
