@@ -2,8 +2,6 @@
 
 package nolambda.linkrouter
 
-import okio.JvmName
-
 /*
  * Copyright (C) 2012 The Android Open Source Project
  *
