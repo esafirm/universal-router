@@ -20,7 +20,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
       - name: Test
-        run:
-          - ./gradlew :core:test
-          - ./gradlew :processor:test
-          - ./gradlew :android:testDebugUnitTest
+        run: |
+          ./gradlew :core:test
+          ./gradlew :processor:test
+          ./gradlew :android:testDebugUnitTest
