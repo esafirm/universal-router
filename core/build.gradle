@@ -47,6 +47,10 @@ artifacts {
     archives sourcesJar
 }
 
+test {
+    useJUnitPlatform()
+}
+
 /* --------------------------------------------------- */
 /* > Dependencies */
 /* --------------------------------------------------- */
@@ -56,5 +60,5 @@ dependencies {
 
     implementation 'com.squareup.okio:okio:2.2.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.0'
+    testImplementation 'io.kotest:kotest-runner-junit5:4.2.6'
 }
