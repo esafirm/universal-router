@@ -1,6 +1,6 @@
 package nolambda.linkrouter
 
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import java.util.*
 import kotlin.system.measureTimeMillis
 
