@@ -7,11 +7,7 @@ apply plugin: 'maven'
 
 apply plugin: 'kotlin'
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
-
 buildscript {
-    ext.kotlin_version = '1.3.61'
     repositories {
         mavenCentral()
         jcenter()
@@ -25,7 +21,7 @@ repositories {
     mavenCentral()
 }
 
-final JVM_TARGET = '1.6'
+final JVM_TARGET = '1.8'
 
 compileKotlin {
     kotlinOptions {
@@ -47,6 +43,10 @@ artifacts {
     archives sourcesJar
 }
 
+test {
+    useJUnitPlatform()
+}
+
 /* --------------------------------------------------- */
 /* > Dependencies */
 /* --------------------------------------------------- */
@@ -54,7 +54,10 @@ artifacts {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.squareup.okio:okio:2.2.2'
+    implementation 'com.squareup.okio:okio:2.7.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.0'
+
+    final kotestVersion = "4.2.6"
+    testImplementation "io.kotest:kotest-runner-junit5:$kotestVersion"
+    testImplementation "io.kotest:kotest-assertions-core:$kotestVersion"
 }

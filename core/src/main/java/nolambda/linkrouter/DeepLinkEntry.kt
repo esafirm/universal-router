@@ -1,5 +1,7 @@
 package nolambda.linkrouter
 
+import nolambda.linkrouter.DeepLinkUri.Companion.toDeepLinkUri
+import nolambda.linkrouter.DeepLinkUri.Companion.toDeepLinkUriOrNull
 import java.util.regex.Pattern
 
 class DeepLinkEntry private constructor(
@@ -15,18 +17,18 @@ class DeepLinkEntry private constructor(
         private val PARAM_PATTERN = Pattern.compile(PARAM_REGEX)
 
         fun parse(url: String): DeepLinkEntry {
-            val parsedUri = DeepLinkUri.parse(url)
+            val parsedUri = url.toDeepLinkUri()
             val schemeHostAndPath = schemeHostAndPath(parsedUri)
             val regex = Pattern.compile(schemeHostAndPath.replace(PARAM_REGEX.toRegex(), PARAM_VALUE) + "$")
             return DeepLinkEntry(regex, parseParameters(parsedUri))
         }
 
         private fun schemeHostAndPath(uri: DeepLinkUri): String {
-            return uri.scheme() + "://" + uri.encodedHost() + uri.encodedPath()
+            return uri.scheme + "://" + uri.host + uri.encodedPath
         }
 
         private fun parseParameters(uri: DeepLinkUri): Set<String> {
-            val matcher = PARAM_PATTERN.matcher(uri.encodedHost() + uri.encodedPath())
+            val matcher = PARAM_PATTERN.matcher(uri.host + uri.encodedPath)
             val patterns = linkedSetOf<String>()
             while (matcher.find()) {
                 patterns.add(matcher.group(1))
@@ -36,12 +38,12 @@ class DeepLinkEntry private constructor(
     }
 
     fun matches(inputUri: String): Boolean {
-        val deepLinkUri = DeepLinkUri.parse(inputUri)
+        val deepLinkUri = inputUri.toDeepLinkUriOrNull()
         return deepLinkUri != null && regex.matcher(schemeHostAndPath(deepLinkUri)).find()
     }
 
     fun getParameters(inputUri: String): Map<String, String> {
-        val deepLinkUri = DeepLinkUri.parse(inputUri)
+        val deepLinkUri = inputUri.toDeepLinkUri()
         val matcher = regex.matcher(schemeHostAndPath(deepLinkUri))
         val paramsMap = mutableMapOf<String, String>()
 

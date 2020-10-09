@@ -1,6 +1,6 @@
 package nolambda.linkrouter.android
 
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class ObjectSpec : StringSpec({
     println("Instance 1: ${A::class.objectInstance}")
