@@ -17,6 +17,6 @@ class FragmentRouter(private val activity: MainActivity) : UriRouter<Fragment>()
     fun goTo(uri: String) {
         fragmentManager.beginTransaction()
             .replace(R.id.container, resolve(uri))
-            .commit()
+            .commitAllowingStateLoss()
     }
 }

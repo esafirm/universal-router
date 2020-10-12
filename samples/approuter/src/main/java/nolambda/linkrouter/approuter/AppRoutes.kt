@@ -6,9 +6,9 @@ import nolambda.linkrouter.optString
 
 class AppRoutes {
     object Home : Route()
-    object Cart : Route("app://cart")
+    object Cart : Route(*AppPath.paths("/cart"))
     object Product : RouteWithParam<Product.ProductParam>(
-        "app://product/{id}"
+        *AppPath.paths("/product/{id}")
     ) {
         data class ProductParam(
             val productId: String

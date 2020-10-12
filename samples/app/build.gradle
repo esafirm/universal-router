@@ -21,9 +21,9 @@ android {
 }
 
 dependencies {
-    implementation project(':approuter')
-    implementation project(':cart')
-    implementation project(':product')
+    implementation project(':samples:approuter')
+    implementation project(':samples:cart')
+    implementation project(':samples:product')
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

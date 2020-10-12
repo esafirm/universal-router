@@ -1,28 +1,20 @@
 package nolambda.linkrouter.examples.notsimple
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_sample_home.*
 import nolambda.linkrouter.android.Router
 import nolambda.linkrouter.approuter.AppRoutes
+import nolambda.linkrouter.examples.R
 
-class HomeScreen : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return FrameLayout(requireContext()).apply {
-            addView(Button(requireContext()).apply {
-                text = "Go To Product"
-                setOnClickListener {
-                    Router.push(AppRoutes.Product)
-                }
-            })
+class HomeScreen : Fragment(R.layout.fragment_sample_home) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        btnGoToProductOne.setOnClickListener {
+            Router.push(AppRoutes.Product, AppRoutes.Product.ProductParam("123"))
+        }
+        btnGoToProductTwo.setOnClickListener {
+            Router.goTo("https://m.bukatoko.com/123")
         }
     }
 }
