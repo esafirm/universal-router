@@ -24,7 +24,7 @@ class RouteAutoRegisterMiddleware(
         val fullClassName = nameResolver(name)
         try {
             val routeInit = Class.forName(fullClassName)
-            routeInit.getDeclaredConstructor(Context::class.java).newInstance(RouterPlugin.appContext)
+            routeInit.getDeclaredConstructor(Context::class.java).newInstance(plugin.appContext)
         } catch (e: ClassNotFoundException) {
             Log.e(TAG, "No initialization found for $fullClassName")
         }
