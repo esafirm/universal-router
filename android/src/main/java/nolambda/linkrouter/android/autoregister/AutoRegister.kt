@@ -1,4 +1,4 @@
-package nolambda.linkrouter.android.annotation
+package nolambda.linkrouter.android.autoregister
 
 @RequiresOptIn(message = "This API is experimental. It doesn't comply with all feature yet.")
 @Retention(AnnotationRetention.BINARY)

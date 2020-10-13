@@ -1,4 +1,4 @@
-package nolambda.linkrouter.android.annotation
+package nolambda.linkrouter.android.autoregister
 
 import android.content.Context
 

@@ -6,10 +6,10 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import nolambda.linkrouter.android.annotation.AutoRegister
-import nolambda.linkrouter.android.annotation.NameResolver
-import nolambda.linkrouter.android.annotation.RouteAutoRegisterMiddleware
-import nolambda.linkrouter.android.annotation.RouteInit
+import nolambda.linkrouter.android.autoregister.AutoRegister
+import nolambda.linkrouter.android.autoregister.NameResolver
+import nolambda.linkrouter.android.autoregister.RouteAutoRegisterMiddleware
+import nolambda.linkrouter.android.autoregister.RouteInit
 
 @OptIn(AutoRegister::class)
 class RouterAutoRegisterMiddlewareSpec : StringSpec({
