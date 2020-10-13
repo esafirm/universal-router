@@ -33,15 +33,11 @@ class RouteInitProcessor : AbstractProcessor() {
 
         env.getElementsAnnotatedWith(Navigate::class.java).forEach { el ->
             if (el.kind != ElementKind.CLASS) {
-                logger.error(
-                    "Annotation can only be applied to content provider or method"
-                )
+                logger.error("Annotation can only be applied to content provider or method")
                 return false
             }
 
-            logger.note(
-                "Note: ${el.enclosedElements.joinToString { it.simpleName }}"
-            )
+            logger.note("Note: ${el.enclosedElements.joinToString { it.simpleName }}")
 
             val annotation = el.getAnnotation(Navigate::class.java)
             val pack = processingEnv.elementUtils.getPackageOf(el).toString()

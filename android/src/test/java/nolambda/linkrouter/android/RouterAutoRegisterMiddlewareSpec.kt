@@ -6,7 +6,12 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import nolambda.linkrouter.android.autoregister.AutoRegister
+import nolambda.linkrouter.android.autoregister.NameResolver
+import nolambda.linkrouter.android.autoregister.RouteAutoRegisterMiddleware
+import nolambda.linkrouter.android.autoregister.RouteInit
 
+@OptIn(AutoRegister::class)
 class RouterAutoRegisterMiddlewareSpec : StringSpec({
     val mockPlugin = mockk<RouterPlugin>(relaxed = true)
     val mockNameResolver = mockk<NameResolver>(relaxed = true)
@@ -40,6 +45,7 @@ class RouterAutoRegisterMiddlewareSpec : StringSpec({
 
 class TestRoute : Route()
 
+@OptIn(AutoRegister::class)
 class TestRouteRouteInit(private val context: Context) : RouteInit {
     override fun onInit(appContext: Context) {
 

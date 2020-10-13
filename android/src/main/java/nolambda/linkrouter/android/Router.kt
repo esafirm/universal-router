@@ -23,10 +23,6 @@ object Router {
     private val middlewares = linkedSetOf<Middleware>()
     private val processors = linkedSetOf<Pair<Class<*>, RouteProcessor<in Any>>>()
 
-    init {
-        addMiddleware(RouteAutoRegisterMiddleware(RouterPlugin))
-    }
-
     /* --------------------------------------------------- */
     /* > Component setup */
     /* --------------------------------------------------- */
