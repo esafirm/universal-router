@@ -15,5 +15,4 @@ class Logger(private val env: ProcessingEnvironment) {
     private fun print(kind: Diagnostic.Kind, message: String) {
         env.messager.printMessage(kind, message)
     }
-
 }
