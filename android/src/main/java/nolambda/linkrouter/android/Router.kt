@@ -2,6 +2,7 @@
 
 package nolambda.linkrouter.android
 
+import nolambda.linkrouter.DeepLinkUri
 import nolambda.linkrouter.SimpleRouter
 import nolambda.linkrouter.UriRouter
 import nolambda.linkrouter.addEntry
@@ -11,9 +12,15 @@ typealias RouteProcessor<T> = (T) -> Unit
 
 class RouteParam<T>(val param: T? = null)
 
+internal data class UriRoute(
+    val uri: DeepLinkUri,
+    val route: BaseRoute<Any>,
+    val param: Map<String, String>
+)
+
 object Router {
     private object AndroidSimpleRouter : SimpleRouter<RouteHandler<*, *>>()
-    private object AndroidUriRouter : UriRouter<Unit>()
+    private object AndroidUriRouter : UriRouter<UriRoute>()
 
     private val simpleRouter = AndroidSimpleRouter
     private val uriRouter = AndroidUriRouter
@@ -57,7 +64,7 @@ object Router {
     /* > Processing */
     /* --------------------------------------------------- */
 
-    fun <P, R> register(route: BaseRoute<P>, handler: RouteHandler<P, R>) {
+    fun <P : Any, R> register(route: BaseRoute<P>, handler: RouteHandler<P, R>) {
         val paths = route.routePaths
 
         // Handle non path
@@ -71,23 +78,21 @@ object Router {
 
         paths.forEach { path ->
             if (path.isBlank()) return@forEach
-
-            uriRouter.addEntry(path) {
-                val result = if (route is RouteWithParam<P>) {
-                    handler.invoke(RouteParam(route.mapParameter(it)))
-                } else {
-                    handler.invoke(RouteParam())
-                }
-                invokeProcessor(result)
+            uriRouter.addEntry(path) { uri, param ->
+                UriRoute(uri, route as BaseRoute<Any>, param)
             }
         }
     }
 
     fun goTo(uri: String) {
-        uriRouter.resolve(uri)
+        val (deepLinkUri, route, param) = uriRouter.resolve(uri)
+        val routeParam = if (route is RouteWithParam<*>) {
+            route.mapUri(deepLinkUri, param)
+        } else null
+        push(route, routeParam)
     }
 
-    fun <P> push(route: BaseRoute<P>, param: P? = null) {
+    fun <P : Any> push(route: BaseRoute<P>, param: P? = null) {
         applyMiddleware(route, param)
         val result = when (param == null) {
             true -> EMPTY_PARAM

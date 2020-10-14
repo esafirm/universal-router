@@ -1,5 +1,6 @@
 package nolambda.linkrouter.approuter
 
+import nolambda.linkrouter.DeepLinkUri
 import nolambda.linkrouter.android.Route
 import nolambda.linkrouter.android.RouteWithParam
 import nolambda.linkrouter.optString
@@ -14,7 +15,7 @@ class AppRoutes {
             val productId: String
         )
 
-        override fun mapParameter(raw: Map<String, String>): ProductParam {
+        override fun mapUri(uri: DeepLinkUri, raw: Map<String, String>): ProductParam {
             return ProductParam(raw.optString("id", ""))
         }
     }

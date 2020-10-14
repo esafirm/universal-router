@@ -9,7 +9,7 @@ class FragmentRouter(private val activity: MainActivity) : UriRouter<Fragment>()
     private val fragmentManager by lazy { activity.supportFragmentManager }
 
     init {
-        addEntry("sample://fragment/{text}") {
+        addEntry("sample://fragment/{text}") { _, it ->
             SampleFragment.newInstance(it["text"] ?: throw IllegalStateException("Uri not valid"))
         }
     }
