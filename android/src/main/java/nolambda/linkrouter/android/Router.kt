@@ -89,7 +89,7 @@ object Router {
         val routeParam = if (route is RouteWithParam<*>) {
             route.mapUri(deepLinkUri, param)
         } else null
-        push(route, routeParam)
+            push(route, routeParam)
     }
 
     fun <P : Any> push(route: BaseRoute<P>, param: P? = null) {
