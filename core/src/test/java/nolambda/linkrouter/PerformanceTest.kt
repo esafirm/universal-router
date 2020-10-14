@@ -15,8 +15,8 @@ class PerformanceTest : StringSpec({
         val simpleHttp = "http://${domain}.js/{kupon}/{customer_id}"
         val simpleHttps = "https://${domain}.js/{kupon}/{customer_id}"
 
-        simpleRouter.addEntry(simpleHttp, simpleHttps) {
-            print("Kupon ${it["kupon"]}")
+        simpleRouter.addEntry(simpleHttp, simpleHttps) { _, param ->
+            print("Kupon ${param["kupon"]}")
         }
 
         simpleHttp
