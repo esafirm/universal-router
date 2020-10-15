@@ -55,8 +55,9 @@ class RouterSpec : StringSpec({
             userId = it.param?.userId?.toInt() ?: 0
         }
 
-        Router.goTo("nolambda://user/1")
+        val result = Router.goTo("nolambda://user/1")
 
+        result shouldBe true
         userId shouldBe 1
     }
 
@@ -84,6 +85,13 @@ class RouterSpec : StringSpec({
         Router.goTo("https://nolambda.stream/1")
 
         userId shouldBe 1
+    }
+
+    "routing non exist path should not trigger execption" {
+        Router.cleanRouter()
+
+        val result = Router.goTo("testing://aaa")
+        result shouldBe false
     }
 
     "param mapper should be working" {
@@ -115,12 +123,14 @@ class RouterSpec : StringSpec({
         HomeRoute.register { returnedString }
         ProductDetailRoute.register { returnedChild }
 
-        Router.addProcessor<String> {
+        Router.addProcessor<String> { it, _ ->
             stringInvoked = true
             it shouldBe returnedString
         }
-        Router.addProcessor<Int> { intInvoked = true }
-        Router.addProcessor<Child> {
+        Router.addProcessor<Int> { _, _ ->
+            intInvoked = true
+        }
+        Router.addProcessor<Child> { it, _ ->
             childInvoked = true
             it shouldBe returnedChild
         }
