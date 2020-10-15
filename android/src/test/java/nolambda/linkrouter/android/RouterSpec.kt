@@ -2,6 +2,7 @@ package nolambda.linkrouter.android
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import nolambda.linkrouter.DeepLinkUri
 import nolambda.linkrouter.android.AndroidRoutes.HomeRoute
 import nolambda.linkrouter.android.AndroidRoutes.ProductDetailRoute
 import nolambda.linkrouter.android.AndroidRoutes.UserRouter
@@ -11,13 +12,14 @@ object AndroidRoutes {
     object HomeRoute : Route()
     object ProductDetailRoute : Route()
     object UserRouter : RouteWithParam<UserRouter.UserParam>(
-        "nolambda://user/{user_id}", "https://nolambda.stream/{user_id}"
+        "nolambda://user/{user_id}", "https://nolambda.stream/{user_id}", "app://user"
     ) {
-        override fun mapParameter(raw: Map<String, String>): UserParam {
-            return UserParam(raw.optString("user_id"))
-        }
-
         data class UserParam(val userId: String)
+
+        override fun mapUri(uri: DeepLinkUri, raw: Map<String, String>): UserParam {
+            val userId = raw["user_id"] ?: uri.queryParameter("user_id") ?: ""
+            return UserParam(userId)
+        }
     }
 }
 
@@ -54,6 +56,19 @@ class RouterSpec : StringSpec({
         }
 
         Router.goTo("nolambda://user/1")
+
+        userId shouldBe 1
+    }
+
+    "routing with uri containing query should be working" {
+        Router.cleanRouter()
+
+        var userId = 0
+        UserRouter.register {
+            userId = it.param?.userId?.toInt() ?: 0
+        }
+
+        Router.goTo("app://user?user_id=1")
 
         userId shouldBe 1
     }

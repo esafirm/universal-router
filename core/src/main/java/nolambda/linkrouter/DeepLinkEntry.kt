@@ -43,7 +43,10 @@ class DeepLinkEntry private constructor(
     }
 
     fun getParameters(inputUri: String): Map<String, String> {
-        val deepLinkUri = inputUri.toDeepLinkUri()
+        return getParameters(inputUri.toDeepLinkUri())
+    }
+
+    fun getParameters(deepLinkUri: DeepLinkUri): Map<String, String> {
         val matcher = regex.matcher(schemeHostAndPath(deepLinkUri))
         val paramsMap = mutableMapOf<String, String>()
 

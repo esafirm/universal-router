@@ -1,6 +1,8 @@
 package nolambda.linkrouter
 
-typealias UriRouterHandler<T> = (Map<String, String>) -> T
+import nolambda.linkrouter.DeepLinkUri.Companion.toDeepLinkUri
+
+typealias UriRouterHandler<T> = (DeepLinkUri, Map<String, String>) -> T
 
 abstract class UriRouter<RES> : Router<String, RES> {
 
@@ -18,7 +20,9 @@ abstract class UriRouter<RES> : Router<String, RES> {
         val deepLinkEntry = filteredMap.keys.first()
         val handler = filteredMap[deepLinkEntry]
 
-        return handler!!.invoke(deepLinkEntry.getParameters(param))
+        val deepLinkUri = param.toDeepLinkUri()
+        val parameters = deepLinkEntry.getParameters(deepLinkUri)
+        return handler!!.invoke(deepLinkUri, parameters)
     }
 }
 
