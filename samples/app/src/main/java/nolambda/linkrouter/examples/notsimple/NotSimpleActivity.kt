@@ -26,9 +26,9 @@ class NotSimpleActivity : AppCompatActivity() {
             HomeScreen()
         }
 
-        addRouterProcessor<Fragment> {
+        addRouterProcessor<Fragment> { fragment, _ ->
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, it)
+                .replace(R.id.container, fragment)
                 .commit()
         }
 
