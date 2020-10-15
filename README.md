@@ -22,9 +22,8 @@ And add this to your module `build.gradle`
 
 ```groovy
 dependencies {
-    implementation 'universal.router:core:<version>'
-    // Android specific
-    implementation 'universal.router:android:<version>'
+    implementation "com.github.esafirm.universal-router:core:$routerVersion"
+    implementation "com.github.esafirm.universal-router:android:$routerVersion"
 }
 ```
 
@@ -41,9 +40,9 @@ It basically consist of two router
 class StringRouter : UrlRouter<String>() {
 
     init {
-        addEntry("nolambda://test/{a}/{b}", "https://test/{a}/{b}") {
-            val first = it["a"]
-            val second = it["b"]
+        addEntry("nolambda://test/{a}/{b}", "https://test/{a}/{b}") { _, param ->
+            val first = param["a"]
+            val second = param["b"]
             "$second came to the wrong neighborhood $first"
         }
     }
@@ -151,7 +150,7 @@ And that's it you got yourself a navigation system.
 ## What's Next
 
 - Navigation type (push, replace, pop)
-- Middleware / Interceptor
+- Annotation auto register (It's partially working now)
 
 ## License 
 
