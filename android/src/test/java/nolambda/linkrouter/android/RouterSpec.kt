@@ -1,12 +1,12 @@
 package nolambda.linkrouter.android
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import nolambda.linkrouter.DeepLinkUri
 import nolambda.linkrouter.android.AndroidRoutes.HomeRoute
 import nolambda.linkrouter.android.AndroidRoutes.ProductDetailRoute
 import nolambda.linkrouter.android.AndroidRoutes.UserRouter
-import nolambda.linkrouter.optString
 
 object AndroidRoutes {
     object HomeRoute : Route()
@@ -141,5 +141,24 @@ class RouterSpec : StringSpec({
         stringInvoked shouldBe true
         intInvoked shouldBe false
         childInvoked shouldBe true
+    }
+
+    "it should throw exception if route is not registered" {
+        Router.cleanRouter()
+        shouldThrow<IllegalStateException> {
+            Router.push(HomeRoute)
+        }
+    }
+
+    "it should trigger error handler from plugin" {
+        Router.cleanRouter()
+
+        var isInvoked = false
+        RouterPlugin.errorHandler = {
+            isInvoked = true
+        }
+        Router.push(HomeRoute)
+
+        isInvoked shouldBe true
     }
 })
