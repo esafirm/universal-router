@@ -30,6 +30,7 @@ dependencies {
 ## Core
 
 It basically consist of two router
+
 1. `SimpleRouter` which route `Any` type of object to anything you need
 2. `UrlRouter` which takes URI instead of object
 
@@ -50,14 +51,16 @@ class StringRouter : UrlRouter<String>() {
 
 // Call router
 // This will return string "you can to the wrong neighborhood yo"
-StringRouter().resolve("nolambda://test/yo/you") 
+StringRouter().resolve("nolambda://test/yo/you")
 ```
 
-> For more sample, plese look at the `samples` directory. 
+> For more sample, plese look at the `samples` directory.
 
 ## Android
 
-Basically with just the `core` module you already can have a navigation system in your modular structured application (think dynamic module use case). The easiest way would be creating a `Singleton` router in your "core" module and then add entries in every other module, but this can get quite messy sometimes, this is when the android router module comes in. 
+<img src="https://raw.githubusercontent.com/esafirm/universal-router/master/art/diagram.png"/>
+
+Basically with just the `core` module you already can have a navigation system in your modular structured application (think dynamic module use case). The easiest way would be creating a `Singleton` router in your "core" module and then add entries in every other module, but this can get quite messy sometimes, this is when the android router module comes in.
 
 First let's define our project structure:
 
@@ -105,7 +108,7 @@ AppRouter.Cart.Register {
 If you want to initiate this in startup and your module doesn't have the access to `Application` class you can use the initializer
 
 ```kotlin
-class CartRouterInitializer : RouterInitializer { 
+class CartRouterInitializer : RouterInitializer {
     override fun onInit(appContext: Context) {
         ... // do as above
     }
@@ -117,7 +120,7 @@ Don't forget to register this on manifest
 ```xml
 <provider
     android:name=".CartRouterInitializer"
-    android:authorities="nolambda.router.cart" 
+    android:authorities="nolambda.router.cart"
 />
 ```
 
@@ -137,13 +140,13 @@ After that you can use the `Router` to navigate your app
 
 ```kotlin
 // This will trigger Cart register lambda
-Router.push(AppRouter.Cart) 
+Router.push(AppRouter.Cart)
 
 // You can use the registered deeplink too
 Router.goTo("https://bukatoko.com/cart")
 ```
 
-And that's it you got yourself a navigation system. 
+And that's it you got yourself a navigation system.
 
 > I can't stress enough that you should check `samples` for better understanding of the library
 
@@ -151,9 +154,8 @@ And that's it you got yourself a navigation system.
 
 - Navigation type (push, replace, pop)
 - Annotation auto register (It's partially working now)
-
-## License 
+  
+
+## License
 
 MIT @ Esa Firman
-
-
