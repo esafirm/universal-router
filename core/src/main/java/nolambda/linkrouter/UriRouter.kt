@@ -4,7 +4,9 @@ import nolambda.linkrouter.DeepLinkUri.Companion.toDeepLinkUri
 
 typealias UriRouterHandler<T> = (DeepLinkUri, Map<String, String>) -> T
 
-abstract class UriRouter<RES> : Router<String, RES> {
+abstract class UriRouter<RES>(
+    private val logger: ((String) -> Unit)? = null
+) : Router<String, RES?> {
 
     internal var entries = linkedMapOf<DeepLinkEntry, UriRouterHandler<RES>>()
 
@@ -12,10 +14,11 @@ abstract class UriRouter<RES> : Router<String, RES> {
         entries.clear()
     }
 
-    override fun resolve(param: String): RES {
+    override fun resolve(param: String): RES? {
         val filteredMap = entries.filter { it.key.matches(param) }
         if (filteredMap.isEmpty()) {
-            throw IllegalStateException("Path not implemented $param")
+            logger?.invoke("Path not implemented $param")
+            return null
         }
         val deepLinkEntry = filteredMap.keys.first()
         val handler = filteredMap[deepLinkEntry]

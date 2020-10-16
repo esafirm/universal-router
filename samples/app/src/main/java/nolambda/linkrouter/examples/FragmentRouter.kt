@@ -15,8 +15,9 @@ class FragmentRouter(private val activity: MainActivity) : UriRouter<Fragment>()
     }
 
     fun goTo(uri: String) {
+        val fragment = resolve(uri) ?: throw IllegalStateException("No path for $uri")
         fragmentManager.beginTransaction()
-            .replace(R.id.container, resolve(uri))
+            .replace(R.id.container, fragment)
             .commitAllowingStateLoss()
     }
 }
