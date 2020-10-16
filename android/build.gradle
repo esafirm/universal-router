@@ -33,6 +33,10 @@ android {
             useJUnitPlatform()
         }
     }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 task sourcesJar(type: Jar) {

@@ -72,18 +72,29 @@ object Router : RouterProcessor, RouterComponents {
     }
 
     override fun goTo(uri: String): Boolean {
-        val result = uriRouter.resolve(uri) ?: return false
-        val (deepLinkUri, route, param) = result
-        val routeParam = if (route is RouteWithParam<*>) {
-            route.mapUri(deepLinkUri, param)
-        } else null
-        processRoute(route, routeParam, ActionInfo(true))
-        return true
+        try {
+            val result = uriRouter.resolve(uri) ?: return false
+            val (deepLinkUri, route, param) = result
+            val routeParam = if (route is RouteWithParam<*>) {
+                route.mapUri(deepLinkUri, param)
+            } else null
+            processRoute(route, routeParam, ActionInfo(true))
+            return true
+        } catch (e: Exception) {
+            e.handleError()
+        }
+        return false
     }
 
     override fun <P : Any> push(route: BaseRoute<P>, param: P?) {
-        processRoute(route, param, ActionInfo(false))
+        try {
+            processRoute(route, param, ActionInfo(false))
+        } catch (e: Exception) {
+            e.handleError()
+        }
     }
+
+    private fun Throwable.handleError() = RouterPlugin.errorHandler(this)
 
     private fun <P : Any> processRoute(route: BaseRoute<P>, param: P?, actionInfo: ActionInfo) {
         applyMiddleware(route, param)
