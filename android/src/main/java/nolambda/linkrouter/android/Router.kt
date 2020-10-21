@@ -88,6 +88,10 @@ object Router : RouterProcessor, RouterComponents {
 
     override fun <P : Any> push(route: BaseRoute<P>, param: P?) {
         try {
+            if (route is RouteWithParam<*> && param == null) {
+                throw IllegalArgumentException("param must be not null for $route")
+            }
+
             processRoute(route, param, ActionInfo(false))
         } catch (e: Exception) {
             e.handleError()

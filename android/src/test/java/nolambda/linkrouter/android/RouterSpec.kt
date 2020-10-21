@@ -21,6 +21,8 @@ object AndroidRoutes {
             return UserParam(userId)
         }
     }
+
+    object PathNoMap : RouteWithParam<String>("app://appkeren")
 }
 
 class RouterSpec : StringSpec({
@@ -147,6 +149,24 @@ class RouterSpec : StringSpec({
         Router.cleanRouter()
         shouldThrow<IllegalStateException> {
             Router.push(HomeRoute)
+        }
+    }
+
+    "it should throw exception if trying to push without param" {
+        Router.cleanRouter()
+
+        Router.register(UserRouter) { "" }
+        shouldThrow<IllegalArgumentException> {
+            Router.push(UserRouter)
+        }
+    }
+
+    "it should throw exception if trying to use uri without defining mapUri" {
+        Router.cleanRouter()
+
+        Router.register(AndroidRoutes.PathNoMap) { "" }
+        shouldThrow<IllegalStateException> {
+            Router.goTo("app://appkeren")
         }
     }
 
