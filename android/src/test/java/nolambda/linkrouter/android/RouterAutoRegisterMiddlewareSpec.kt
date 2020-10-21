@@ -26,7 +26,7 @@ class RouterAutoRegisterMiddlewareSpec : StringSpec({
 
     "It should not register if the annotation is false" {
         every { mockPlugin.isUseAnnotationProcessor } returns false
-        routeAutoRegister.onRouting(TestRoute(), null)
+        routeAutoRegister.onRouting(TestRoute(), RouteParam(param = null, ActionInfo(false)))
 
         verify(exactly = 0) {
             mockNameResolver.invoke(any())
@@ -35,7 +35,7 @@ class RouterAutoRegisterMiddlewareSpec : StringSpec({
 
     "It should resolve and invoke init" {
         every { mockPlugin.isUseAnnotationProcessor } returns true
-        routeAutoRegister.onRouting(TestRoute(), null)
+        routeAutoRegister.onRouting(TestRoute(), RouteParam(param = null, ActionInfo(false)))
 
         verify(exactly = 1) {
             mockNameResolver.invoke(any())

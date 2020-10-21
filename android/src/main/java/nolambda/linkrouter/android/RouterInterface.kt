@@ -2,12 +2,13 @@ package nolambda.linkrouter.android
 
 import nolambda.linkrouter.DeepLinkUri
 
-typealias RouteHandler<P, R> = (RouteParam<P>) -> R
+typealias RouteHandler<P, R, E> = (RouteParam<P, E>) -> R
 typealias RouteProcessor<T> = (T, ActionInfo) -> Unit
 
-class RouteParam<T>(
-    val param: T? = null,
-    val info: ActionInfo
+class RouteParam<Param, Extra>(
+    val param: Param? = null,
+    val info: ActionInfo,
+    var extra: Extra? = null
 )
 
 /**
@@ -26,16 +27,16 @@ internal data class UriRoute(
     val param: Map<String, String>
 )
 
-interface RouterComponents {
+interface RouterComponents<Extra> {
     fun cleanRouter()
     fun removeProcessor(processor: RouteProcessor<*>)
     fun <T> addProcessor(clazz: Class<T>, processor: RouteProcessor<T>)
-    fun addMiddleware(middleware: Middleware)
-    fun removeMiddleware(middleware: Middleware)
+    fun addMiddleware(middleware: Middleware<Extra>)
+    fun removeMiddleware(middleware: Middleware<Extra>)
 }
 
-interface RouterProcessor {
-    fun <P : Any, R> register(route: BaseRoute<P>, handler: RouteHandler<P, R>)
+interface RouterProcessor<Extra> {
+    fun <P : Any, R> register(route: BaseRoute<P>, handler: RouteHandler<P, R, Extra>)
     fun goTo(uri: String): Boolean
     fun <P : Any> push(route: BaseRoute<P>, param: P? = null)
 }

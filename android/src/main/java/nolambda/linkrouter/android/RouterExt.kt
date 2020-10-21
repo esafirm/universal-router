@@ -6,21 +6,22 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 
 inline fun <reified T> LifecycleOwner.addRouterProcessor(
+    router: RouterComponents<*>,
     noinline processor: RouteProcessor<T>
 ) {
     lifecycle.addObserver(object : LifecycleObserver {
         @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
         fun onCreate() {
-            Router.addProcessor(processor)
+            router.addProcessor(T::class.java, processor)
         }
 
         @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         fun onDestroy() {
-            Router.removeProcessor(processor)
+            router.removeProcessor(processor)
         }
     })
 
     if (lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
-        Router.addProcessor(processor)
+        router.addProcessor(T::class.java, processor)
     }
 }

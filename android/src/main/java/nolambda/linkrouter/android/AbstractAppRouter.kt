@@ -6,15 +6,15 @@ import nolambda.linkrouter.SimpleRouter
 import nolambda.linkrouter.UriRouter
 import nolambda.linkrouter.addEntry
 
-object Router : RouterProcessor, RouterComponents {
+abstract class AbstractAppRouter<Extra> : RouterProcessor<Extra>, RouterComponents<Extra> {
 
-    private class AndroidSimpleRouter : SimpleRouter<RouteHandler<*, *>>()
+    private class AndroidSimpleRouter : SimpleRouter<RouteHandler<*, *, *>>()
     private class AndroidUriRouter : UriRouter<UriRoute>(RouterPlugin.logger)
 
     private val simpleRouter by lazy { AndroidSimpleRouter() }
     private val uriRouter by lazy { AndroidUriRouter() }
 
-    private val middlewares = linkedSetOf<Middleware>()
+    private val middlewares = linkedSetOf<Middleware<Extra>>()
     private val processors = linkedSetOf<Pair<Class<*>, RouteProcessor<in Any>>>()
 
     /* --------------------------------------------------- */
@@ -39,11 +39,11 @@ object Router : RouterProcessor, RouterComponents {
         addProcessor(T::class.java, processor)
     }
 
-    override fun addMiddleware(middleware: Middleware) {
+    override fun addMiddleware(middleware: Middleware<Extra>) {
         middlewares.add(middleware)
     }
 
-    override fun removeMiddleware(middleware: Middleware) {
+    override fun removeMiddleware(middleware: Middleware<Extra>) {
         middlewares.remove(middleware)
     }
 
@@ -51,13 +51,13 @@ object Router : RouterProcessor, RouterComponents {
     /* > Processing */
     /* --------------------------------------------------- */
 
-    override fun <P : Any, R> register(route: BaseRoute<P>, handler: RouteHandler<P, R>) {
+    override fun <P : Any, R> register(route: BaseRoute<P>, handler: RouteHandler<P, R, Extra>) {
         val paths = route.routePaths
 
         // Handle non path
         simpleRouter.addEntry(route) {
             @Suppress("UNCHECKED_CAST")
-            handler as RouteHandler<*, *>
+            handler as RouteHandler<*, *, *>
         }
 
         // Handle the path
@@ -101,23 +101,23 @@ object Router : RouterProcessor, RouterComponents {
     private fun Throwable.handleError() = RouterPlugin.errorHandler(this)
 
     private fun <P : Any> processRoute(route: BaseRoute<P>, param: P?, actionInfo: ActionInfo) {
-        applyMiddleware(route, param)
-        val routeParam = RouteParam(
+        val routeParam = RouteParam<P, Extra>(
             info = actionInfo,
             param = param
         )
+        applyMiddleware(route, routeParam)
         invokeProcessor(simpleResolve(route, routeParam), actionInfo)
     }
 
-    private fun applyMiddleware(route: BaseRoute<*>, param: Any?) {
+    private fun <P: Any> applyMiddleware(route: BaseRoute<*>, routeParam: RouteParam<P, Extra>) {
         middlewares.forEach {
-            it.onRouting(route, param)
+            it.onRouting(route, routeParam)
         }
     }
 
     private fun simpleResolve(
         route: BaseRoute<*>,
-        param: RouteParam<*>
+        param: RouteParam<*, *>
     ) = simpleRouter.resolve(route).invoke(param)
 
     private fun invokeProcessor(result: Any?, info: ActionInfo) {

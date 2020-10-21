@@ -7,6 +7,7 @@ import nolambda.linkrouter.android.autoregister.AutoRegister
 import nolambda.linkrouter.android.autoregister.RouteInit
 import nolambda.linkrouter.annotations.Navigate
 import nolambda.linkrouter.approuter.AppRoutes
+import nolambda.linkrouter.approuter.register
 
 @OptIn(AutoRegister::class)
 @Navigate(route = AppRoutes.Product::class)

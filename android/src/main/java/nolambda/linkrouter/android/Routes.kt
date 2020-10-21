@@ -4,11 +4,7 @@ import nolambda.linkrouter.DeepLinkUri
 
 abstract class BaseRoute<P : Any>(
     vararg val routePaths: String
-) {
-    fun <R> register(handler: RouteHandler<P, R>) {
-        Router.register(this, handler)
-    }
-}
+)
 
 abstract class Route(
     vararg paths: String = emptyArray()
