@@ -21,5 +21,7 @@ abstract class RouteWithParam<P : Any>(
         return true
     }
 
-    abstract fun mapUri(uri: DeepLinkUri, raw: Map<String, String>): P
+    open fun mapUri(uri: DeepLinkUri, raw: Map<String, String>): P {
+        throw IllegalStateException("mapUri should be override if you have paths")
+    }
 }
