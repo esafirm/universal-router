@@ -6,7 +6,9 @@ import nolambda.linkrouter.SimpleRouter
 import nolambda.linkrouter.UriRouter
 import nolambda.linkrouter.addEntry
 
-abstract class AbstractAppRouter<Extra> : RouterProcessor<Extra>, RouterComponents<Extra> {
+abstract class AbstractAppRouter<Extra>(
+    vararg middleWares: Middleware<Extra> = emptyArray()
+) : AppRouter<Extra> {
 
     private class AndroidSimpleRouter : SimpleRouter<RouteHandler<*, *, *>>()
     private class AndroidUriRouter : UriRouter<UriRoute>(RouterPlugin.logger)
@@ -16,6 +18,10 @@ abstract class AbstractAppRouter<Extra> : RouterProcessor<Extra>, RouterComponen
 
     private val middlewares = linkedSetOf<Middleware<Extra>>()
     private val processors = linkedSetOf<Pair<Class<*>, RouteProcessor<in Any>>>()
+
+    init {
+        middlewares.addAll(middleWares)
+    }
 
     /* --------------------------------------------------- */
     /* > Component setup */
@@ -37,14 +43,6 @@ abstract class AbstractAppRouter<Extra> : RouterProcessor<Extra>, RouterComponen
 
     inline fun <reified T> addProcessor(noinline processor: RouteProcessor<T>) {
         addProcessor(T::class.java, processor)
-    }
-
-    override fun addMiddleware(middleware: Middleware<Extra>) {
-        middlewares.add(middleware)
-    }
-
-    override fun removeMiddleware(middleware: Middleware<Extra>) {
-        middlewares.remove(middleware)
     }
 
     /* --------------------------------------------------- */
@@ -109,7 +107,7 @@ abstract class AbstractAppRouter<Extra> : RouterProcessor<Extra>, RouterComponen
         invokeProcessor(simpleResolve(route, routeParam), actionInfo)
     }
 
-    private fun <P: Any> applyMiddleware(route: BaseRoute<*>, routeParam: RouteParam<P, Extra>) {
+    private fun <P : Any> applyMiddleware(route: BaseRoute<*>, routeParam: RouteParam<P, Extra>) {
         middlewares.forEach {
             it.onRouting(route, routeParam)
         }

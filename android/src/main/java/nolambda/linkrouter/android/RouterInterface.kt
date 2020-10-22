@@ -27,12 +27,10 @@ internal data class UriRoute(
     val param: Map<String, String>
 )
 
-interface RouterComponents<Extra> {
+interface RouterComponents {
     fun cleanRouter()
     fun removeProcessor(processor: RouteProcessor<*>)
     fun <T> addProcessor(clazz: Class<T>, processor: RouteProcessor<T>)
-    fun addMiddleware(middleware: Middleware<Extra>)
-    fun removeMiddleware(middleware: Middleware<Extra>)
 }
 
 interface RouterProcessor<Extra> {
@@ -40,3 +38,5 @@ interface RouterProcessor<Extra> {
     fun goTo(uri: String): Boolean
     fun <P : Any> push(route: BaseRoute<P>, param: P? = null)
 }
+
+interface AppRouter<Extra> : RouterProcessor<Extra>, RouterComponents
