@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 
 inline fun <reified T> LifecycleOwner.addRouterProcessor(
-    router: RouterComponents<*>,
+    router: RouterComponents,
     noinline processor: RouteProcessor<T>
 ) {
     lifecycle.addObserver(object : LifecycleObserver {
