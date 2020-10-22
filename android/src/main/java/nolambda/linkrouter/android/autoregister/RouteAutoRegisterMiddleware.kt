@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import nolambda.linkrouter.android.BaseRoute
 import nolambda.linkrouter.android.Middleware
+import nolambda.linkrouter.android.RouteParam
 import nolambda.linkrouter.android.RouterPlugin
 
 typealias NameResolver = (String) -> String
@@ -12,13 +13,13 @@ typealias NameResolver = (String) -> String
 class RouteAutoRegisterMiddleware(
     private val plugin: RouterPlugin = RouterPlugin,
     private val nameResolver: NameResolver = { name -> "nolambda.init.route.${name}" }
-) : Middleware {
+) : Middleware<Any> {
 
     companion object {
         private const val TAG = "RouteAutoRegister"
     }
 
-    override fun onRouting(route: BaseRoute<*>, param: Any?) {
+    override fun onRouting(route: BaseRoute<*>, routeParam: RouteParam<*, Any>) {
         if (plugin.isUseAnnotationProcessor.not()) return
         val name = "${route.javaClass.simpleName}RouteInit"
         val fullClassName = nameResolver(name)
