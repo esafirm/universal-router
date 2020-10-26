@@ -39,4 +39,12 @@ class UriRouterSpec : StringSpec({
         router.addEntry("http://test.com/promo-list/cap") { _, _ -> "5" }
         router.resolve("http://test.com/promo-list/cap") shouldBe "4"
     }
+
+    "it should match normal regex" {
+        val router = createTestRouter()
+        router.addEntry("http://something.com/.*/{a}") { _, param -> param["a"].orEmpty() }
+        val result = router.resolve("http://something.com/aaaa/true")
+
+        result shouldBe "true"
+    }
 })
