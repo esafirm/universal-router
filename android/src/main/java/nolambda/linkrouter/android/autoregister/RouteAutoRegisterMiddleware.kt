@@ -19,8 +19,8 @@ class RouteAutoRegisterMiddleware(
         private const val TAG = "RouteAutoRegister"
     }
 
-    override fun onRouting(route: BaseRoute<*>, routeParam: RouteParam<*, Any>) {
-        if (plugin.isUseAnnotationProcessor.not()) return
+    override fun onRouting(route: BaseRoute<*>, routeParam: RouteParam<*, Any>): BaseRoute<*> {
+        if (plugin.isUseAnnotationProcessor.not()) return route
         val name = "${route.javaClass.simpleName}RouteInit"
         val fullClassName = nameResolver(name)
         try {
@@ -29,5 +29,6 @@ class RouteAutoRegisterMiddleware(
         } catch (e: ClassNotFoundException) {
             Log.e(TAG, "No initialization found for $fullClassName")
         }
+        return route
     }
 }

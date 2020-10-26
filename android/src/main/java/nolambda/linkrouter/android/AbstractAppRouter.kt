@@ -103,14 +103,17 @@ abstract class AbstractAppRouter<Extra>(
             info = actionInfo,
             param = param
         )
-        applyMiddleware(route, routeParam)
-        invokeProcessor(simpleResolve(route, routeParam), actionInfo)
+        val finalRoute = applyMiddleware(route, routeParam)
+        invokeProcessor(simpleResolve(finalRoute, routeParam), actionInfo)
     }
 
-    private fun <P : Any> applyMiddleware(route: BaseRoute<*>, routeParam: RouteParam<P, Extra>) {
-        middlewares.forEach {
-            it.onRouting(route, routeParam)
-        }
+    private fun <P : Any> applyMiddleware(
+        route: BaseRoute<*>,
+        routeParam: RouteParam<P, Extra>
+    ): BaseRoute<P> {
+        return middlewares.fold(route) { acc, middleware ->
+            middleware.onRouting(acc, routeParam)
+        } as BaseRoute<P>
     }
 
     private fun simpleResolve(
