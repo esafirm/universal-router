@@ -16,6 +16,7 @@ class RouterAutoRegisterMiddlewareSpec : StringSpec({
     val mockPlugin = mockk<RouterPlugin>(relaxed = true)
     val mockNameResolver = mockk<NameResolver>(relaxed = true)
     val routeAutoRegister = RouteAutoRegisterMiddleware(mockPlugin, mockNameResolver)
+    val mockRouter = mockk<AbstractAppRouter<*>>(relaxed = true)
 
     val nameSlot = slot<String>()
     every {
@@ -26,7 +27,10 @@ class RouterAutoRegisterMiddlewareSpec : StringSpec({
 
     "It should not register if the annotation is false" {
         every { mockPlugin.isUseAnnotationProcessor } returns false
-        routeAutoRegister.onRouting(TestRoute(), RouteParam(param = null, ActionInfo(false)))
+        routeAutoRegister.onRouting(
+            TestRoute(),
+            RouteParam(param = null, ActionInfo(false, mockRouter))
+        )
 
         verify(exactly = 0) {
             mockNameResolver.invoke(any())
@@ -35,7 +39,10 @@ class RouterAutoRegisterMiddlewareSpec : StringSpec({
 
     "It should resolve and invoke init" {
         every { mockPlugin.isUseAnnotationProcessor } returns true
-        routeAutoRegister.onRouting(TestRoute(), RouteParam(param = null, ActionInfo(false)))
+        routeAutoRegister.onRouting(
+            TestRoute(),
+            RouteParam(param = null, ActionInfo(false, mockRouter))
+        )
 
         verify(exactly = 1) {
             mockNameResolver.invoke(any())
