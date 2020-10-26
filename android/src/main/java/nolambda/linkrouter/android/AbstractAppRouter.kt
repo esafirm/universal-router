@@ -76,7 +76,7 @@ abstract class AbstractAppRouter<Extra>(
             val routeParam = if (route is RouteWithParam<*>) {
                 route.mapUri(deepLinkUri, param)
             } else null
-            processRoute(route, routeParam, ActionInfo(true))
+            processRoute(route, routeParam, createInfo(true))
             return true
         } catch (e: Exception) {
             e.handleError()
@@ -90,7 +90,7 @@ abstract class AbstractAppRouter<Extra>(
                 throw IllegalArgumentException("param must be not null for $route")
             }
 
-            processRoute(route, param, ActionInfo(false))
+            processRoute(route, param, createInfo(false))
         } catch (e: Exception) {
             e.handleError()
         }
@@ -129,4 +129,8 @@ abstract class AbstractAppRouter<Extra>(
             }
         }
     }
+
+    private fun createInfo(
+        isTriggeredByUri: Boolean
+    ): ActionInfo = ActionInfo(isTriggeredByUri, this)
 }
