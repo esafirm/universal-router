@@ -34,7 +34,7 @@ data class AppState(
 )
 
 private val logMiddleWare = object : Middleware<AppState> {
-    override fun onRouting(route: BaseRoute<*>, routeParam: RouteParam<*, AppState>) {
+    override fun onRouting(route: BaseRoute<*>, routeParam: RouteParam<*, AppState>): BaseRoute<*> {
         routeParam.extra = AppState(
             isLoggedIn = false,
             heavyState = {
@@ -42,6 +42,7 @@ private val logMiddleWare = object : Middleware<AppState> {
                 "This is a message"
             }
         )
+        return route
     }
 }
 
