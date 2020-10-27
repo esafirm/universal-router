@@ -15,9 +15,11 @@ class RouteParam<Param, Extra>(
  * Contain info regarding the action that trigger the routing
  */
 data class ActionInfo(
-    val isTriggeredByUri: Boolean,
-    val currentRouter: AbstractAppRouter<*>
-)
+    val currentRouter: AbstractAppRouter<*>,
+    val uri: String? = null
+) {
+    val isTriggeredByUri = uri.isNullOrEmpty().not()
+}
 
 /**
  * URI Router resolved data
