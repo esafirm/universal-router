@@ -29,7 +29,7 @@ class RouterAutoRegisterMiddlewareSpec : StringSpec({
         every { mockPlugin.isUseAnnotationProcessor } returns false
         routeAutoRegister.onRouting(
             TestRoute(),
-            RouteParam(param = null, ActionInfo(false, mockRouter))
+            RouteParam(param = null, ActionInfo(mockRouter))
         )
 
         verify(exactly = 0) {
@@ -41,7 +41,7 @@ class RouterAutoRegisterMiddlewareSpec : StringSpec({
         every { mockPlugin.isUseAnnotationProcessor } returns true
         routeAutoRegister.onRouting(
             TestRoute(),
-            RouteParam(param = null, ActionInfo(false, mockRouter))
+            RouteParam(param = null, ActionInfo(mockRouter))
         )
 
         verify(exactly = 1) {
