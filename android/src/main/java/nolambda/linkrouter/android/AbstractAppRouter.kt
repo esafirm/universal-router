@@ -84,13 +84,17 @@ abstract class AbstractAppRouter<Extra>(
         return false
     }
 
-    override fun <P : Any> push(route: BaseRoute<P>, param: P?) {
+    override fun <P : Any> push(route: RouteWithParam<P>, param: P) {
         try {
-            if (route is RouteWithParam<*> && param == null) {
-                throw IllegalArgumentException("param must be not null for $route")
-            }
-
             processRoute(route, param, createInfo())
+        } catch (e: Exception) {
+            e.handleError()
+        }
+    }
+
+    override fun push(route: Route) {
+        try {
+            processRoute(route, null, createInfo())
         } catch (e: Exception) {
             e.handleError()
         }

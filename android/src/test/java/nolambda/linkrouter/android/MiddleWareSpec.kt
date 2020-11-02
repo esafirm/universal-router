@@ -2,6 +2,7 @@ package nolambda.linkrouter.android
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import nolambda.linkrouter.android.test.testHit
 
 class MiddleWareSpec : StringSpec({
     val firstRoute = object : Route() {}

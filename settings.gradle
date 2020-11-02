@@ -1,2 +1,2 @@
-include ':core', ':android', ':annotations', ':processor'
+include ':core', ':android', ':annotations', ':processor', ':android-test'
 include ':samples:app', ':samples:approuter', 'samples:cart', 'samples:product'
