@@ -158,15 +158,6 @@ class RouterSpec : StringSpec({
         }
     }
 
-    "it should throw exception if trying to push without param" {
-        TestRouter.cleanRouter()
-
-        TestRouter.register(UserRouter) { "" }
-        shouldThrow<IllegalArgumentException> {
-            TestRouter.push(UserRouter, UserRouter.UserParam("1"))
-        }
-    }
-
     "it should throw exception if trying to use uri without defining mapUri" {
         TestRouter.cleanRouter()
 
