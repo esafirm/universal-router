@@ -163,7 +163,7 @@ class RouterSpec : StringSpec({
 
         TestRouter.register(UserRouter) { "" }
         shouldThrow<IllegalArgumentException> {
-            TestRouter.push(UserRouter)
+            TestRouter.push(UserRouter, UserRouter.UserParam("1"))
         }
     }
 
