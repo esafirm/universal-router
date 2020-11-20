@@ -41,13 +41,10 @@ class MiddleWareSpec : StringSpec({
     }
 
     "Middleware should replace the param" {
-        var isHit = false
-        testRouter.register(thirdRoute) {
-            isHit = true
+        testRouter.testHit(thirdRoute, "ABC") {
             it.param shouldBe ""
+            true
         }
-        testRouter.push(thirdRoute, "ABC")
-        isHit shouldBe true
     }
 
 })
