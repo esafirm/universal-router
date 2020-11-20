@@ -3,7 +3,7 @@ package nolambda.linkrouter.approuter
 import nolambda.linkrouter.DeepLinkUri
 import nolambda.linkrouter.android.AbstractAppRouter
 import nolambda.linkrouter.android.BaseRoute
-import nolambda.linkrouter.android.Middleware
+import nolambda.linkrouter.android.middlewares.Middleware
 import nolambda.linkrouter.android.Route
 import nolambda.linkrouter.android.RouteHandler
 import nolambda.linkrouter.android.RouteParam

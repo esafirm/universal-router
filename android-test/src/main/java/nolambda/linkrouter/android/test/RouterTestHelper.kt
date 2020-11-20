@@ -2,7 +2,10 @@ package nolambda.linkrouter.android.test
 
 import nolambda.linkrouter.android.AbstractAppRouter
 import nolambda.linkrouter.android.Route
+import nolambda.linkrouter.android.RouteParam
 import nolambda.linkrouter.android.RouteWithParam
+
+typealias RouterMatcher<P, E> = (RouteParam<P, E>) -> Boolean
 
 fun AbstractAppRouter<*>.testHit(route: Route): Boolean {
     var isHit = false
@@ -13,11 +16,19 @@ fun AbstractAppRouter<*>.testHit(route: Route): Boolean {
     return isHit
 }
 
-fun <P : Any> AbstractAppRouter<*>.testHit(route: RouteWithParam<P>, param: P): Boolean {
-    var isHit = false
+fun <P : Any, E> AbstractAppRouter<*>.testHit(
+    route: RouteWithParam<P>,
+    param: P,
+    matcher: RouterMatcher<P, E> = RouterMatchers.hitMatcher(),
+): Boolean {
+    var testResult = false
     register(route) {
-        isHit = true
+        testResult = matcher.invoke(it as RouteParam<P, E>)
     }
     push(route, param)
-    return isHit
+    return testResult
+}
+
+object RouterMatchers {
+    fun <P, E> hitMatcher(): RouterMatcher<P, E> = { true }
 }

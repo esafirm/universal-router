@@ -3,16 +3,11 @@ package nolambda.linkrouter.examples.notsimple
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import nolambda.linkrouter.android.BaseRoute
-import nolambda.linkrouter.android.Middleware
-import nolambda.linkrouter.android.RouteParam
 import nolambda.linkrouter.android.RouterPlugin
 import nolambda.linkrouter.android.addRouterProcessor
 import nolambda.linkrouter.android.autoregister.AutoRegister
-import nolambda.linkrouter.android.autoregister.RouteAutoRegisterMiddleware
 import nolambda.linkrouter.approuter.AppRouter
 import nolambda.linkrouter.approuter.AppRoutes
-import nolambda.linkrouter.approuter.AppState
 import nolambda.linkrouter.approuter.register
 import nolambda.linkrouter.examples.R
 

@@ -5,6 +5,8 @@ package nolambda.linkrouter.android
 import nolambda.linkrouter.SimpleRouter
 import nolambda.linkrouter.UriRouter
 import nolambda.linkrouter.addEntry
+import nolambda.linkrouter.android.middlewares.MiddleWareResult
+import nolambda.linkrouter.android.middlewares.Middleware
 
 abstract class AbstractAppRouter<Extra>(
     vararg middleWares: Middleware<Extra> = emptyArray()
@@ -107,17 +109,18 @@ abstract class AbstractAppRouter<Extra>(
             info = actionInfo,
             param = param
         )
-        val finalRoute = applyMiddleware(route, routeParam)
-        invokeProcessor(simpleResolve(finalRoute, routeParam), actionInfo)
+        val (finalRoute, finalParam) = applyMiddleware(route, routeParam)
+        invokeProcessor(simpleResolve(finalRoute, finalParam), actionInfo)
     }
 
     private fun <P : Any> applyMiddleware(
         route: BaseRoute<*>,
         routeParam: RouteParam<P, Extra>
-    ): BaseRoute<P> {
-        return middlewares.fold(route) { acc, middleware ->
-            middleware.onRouting(acc, routeParam)
-        } as BaseRoute<P>
+    ): MiddleWareResult<Extra> {
+        val initial = MiddleWareResult(route, routeParam)
+        return middlewares.fold(initial) { acc, middleware ->
+            middleware.onRouting(acc.route, acc.routeParam)
+        }
     }
 
     private fun simpleResolve(
