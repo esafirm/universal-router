@@ -9,7 +9,13 @@ class RouteParam<Param, Extra>(
     val param: Param? = null,
     val info: ActionInfo,
     var extra: Extra? = null
-)
+) {
+    fun <P> copyWithParam(
+        passedParam: P?,
+        passedInfo: ActionInfo = info,
+        passedExtra: Extra? = extra
+    ) = RouteParam(passedParam, passedInfo, passedExtra)
+}
 
 /**
  * Contain info regarding the action that trigger the routing
