@@ -10,6 +10,7 @@ import nolambda.linkrouter.android.autoregister.AutoRegister
 import nolambda.linkrouter.android.autoregister.NameResolver
 import nolambda.linkrouter.android.autoregister.RouteAutoRegisterMiddleware
 import nolambda.linkrouter.android.autoregister.RouteInit
+import nolambda.linkrouter.android.test.TestRoute
 
 @OptIn(AutoRegister::class)
 class RouterAutoRegisterMiddlewareSpec : StringSpec({
@@ -49,8 +50,6 @@ class RouterAutoRegisterMiddlewareSpec : StringSpec({
         }
     }
 })
-
-class TestRoute : Route()
 
 @OptIn(AutoRegister::class)
 class TestRouteRouteInit(private val context: Context) : RouteInit {

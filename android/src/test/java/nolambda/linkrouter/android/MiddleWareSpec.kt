@@ -4,12 +4,14 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import nolambda.linkrouter.android.middlewares.MiddleWareResult
 import nolambda.linkrouter.android.middlewares.Middleware
+import nolambda.linkrouter.android.test.TestRoute
+import nolambda.linkrouter.android.test.TestRouteWithParam
 import nolambda.linkrouter.android.test.testHit
 
 class MiddleWareSpec : StringSpec({
-    val firstRoute = object : Route() {}
-    val secondRoute = object : Route() {}
-    val thirdRoute = object : RouteWithParam<String>() {}
+    val firstRoute = TestRoute()
+    val secondRoute = TestRoute()
+    val thirdRoute = TestRouteWithParam<String>()
 
     var shouldReroute = false
     val rerouteMiddleware = object : Middleware<Unit> {
