@@ -1,16 +1,17 @@
 package nolambda.linkrouter.approuter
 
 import nolambda.linkrouter.DeepLinkUri
-import nolambda.linkrouter.android.AbstractAppRouter
 import nolambda.linkrouter.android.BaseRoute
-import nolambda.linkrouter.android.middlewares.Middleware
 import nolambda.linkrouter.android.Route
 import nolambda.linkrouter.android.RouteHandler
 import nolambda.linkrouter.android.RouteParam
 import nolambda.linkrouter.android.RouteWithParam
 import nolambda.linkrouter.android.autoregister.AutoRegister
 import nolambda.linkrouter.android.autoregister.RouteAutoRegisterMiddleware
+import nolambda.linkrouter.android.measure.DefaultMeasureConfig
+import nolambda.linkrouter.android.measure.MeasuredAbstractAppRouter
 import nolambda.linkrouter.android.middlewares.MiddleWareResult
+import nolambda.linkrouter.android.middlewares.Middleware
 import nolambda.linkrouter.optString
 
 class AppRoutes {
@@ -48,7 +49,8 @@ private val logMiddleWare = object : Middleware<AppState> {
 }
 
 @OptIn(AutoRegister::class)
-object AppRouter : AbstractAppRouter<AppState>(
+object AppRouter : MeasuredAbstractAppRouter<AppState>(
+    DefaultMeasureConfig(),
     logMiddleWare,
     RouteAutoRegisterMiddleware() as Middleware<AppState>
 )

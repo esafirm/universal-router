@@ -18,11 +18,15 @@ abstract class AbstractAppRouter<Extra>(
     private val simpleRouter by lazy { AndroidSimpleRouter() }
     private val uriRouter by lazy { AndroidUriRouter() }
 
-    private val middlewares = linkedSetOf<Middleware<Extra>>()
+    private val middlewares by lazy { createMiddleWares() }
     private val processors = linkedSetOf<Pair<Class<*>, RouteProcessor<in Any>>>()
 
-    init {
-        middlewares.addAll(middleWares)
+    private val _middleWares = middleWares
+
+    protected open fun createMiddleWares(): Set<Middleware<Extra>> {
+        val set = linkedSetOf<Middleware<Extra>>()
+        set.addAll(_middleWares)
+        return set
     }
 
     /* --------------------------------------------------- */
@@ -119,7 +123,7 @@ abstract class AbstractAppRouter<Extra>(
         invokeProcessor(simpleResolve(finalRoute, finalParam), actionInfo)
     }
 
-    private fun <P : Any> applyMiddleware(
+    protected open fun <P : Any> applyMiddleware(
         route: BaseRoute<*>,
         routeParam: RouteParam<P, Extra>
     ): MiddleWareResult<Extra> {
