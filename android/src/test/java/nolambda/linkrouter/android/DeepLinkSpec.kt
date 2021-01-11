@@ -5,6 +5,7 @@ import io.kotest.matchers.shouldBe
 import nolambda.linkrouter.DeepLinkUri
 import nolambda.linkrouter.android.test.DeepLinkAssertions
 import nolambda.linkrouter.android.test.testDeepLink
+import java.lang.NumberFormatException
 
 class DeepLinkSpec : StringSpec({
 
@@ -12,7 +13,8 @@ class DeepLinkSpec : StringSpec({
 
     val userRoute = object : RouteWithParam<IdParam>("nolambda://user/{id}") {
         override fun mapUri(uri: DeepLinkUri, raw: Map<String, String>): IdParam {
-            return IdParam(raw["id"] ?: error(""))
+            val id = (raw["id"] ?: error("")).toInt()
+            return IdParam(id.toString())
         }
     }
 
@@ -28,6 +30,7 @@ class DeepLinkSpec : StringSpec({
         router.testDeepLink(listOf(
             userRoute to listOf(
                 "nolambda://user/1" to DeepLinkAssertions.shouldValid(),
+                "nolambda://user/abc" to DeepLinkAssertions.shouldThrow<NumberFormatException>()
             ),
             itemRoute to listOf(
                 "https://nolambda.stream/items/10" to { it.routeParam?.param?.id shouldBe "10" },
