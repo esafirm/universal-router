@@ -1,5 +1,7 @@
 apply from: "${buildSystemDir}/base.gradle"
 
 dependencies {
+    implementation project(':android')
+
     implementation deps.appCompat
 }
