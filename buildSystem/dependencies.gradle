@@ -1,0 +1,7 @@
+ext {
+    final appCompatVersion = '1.2.0'
+
+    deps = [
+            appCompat: "androidx.appcompat:appcompat:$appCompatVersion"
+    ]
+}
