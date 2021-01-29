@@ -1,0 +1,4 @@
+ext {
+    buildSystemDir = "${rootDir}/buildSystem"
+    rootBuildDir = "${rootDir}/build"
+}

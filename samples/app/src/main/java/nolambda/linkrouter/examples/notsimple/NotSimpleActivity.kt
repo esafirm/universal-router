@@ -1,7 +1,6 @@
 package nolambda.linkrouter.examples.notsimple
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import nolambda.linkrouter.android.RouterPlugin
@@ -13,6 +12,7 @@ import nolambda.linkrouter.approuter.register
 import nolambda.linkrouter.examples.R
 
 class NotSimpleActivity : AppCompatActivity() {
+
     @AutoRegister
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,9 +21,6 @@ class NotSimpleActivity : AppCompatActivity() {
         RouterPlugin.run {
             appContext = this@NotSimpleActivity.applicationContext
             isUseAnnotationProcessor = true
-            logger = {
-                Log.d("Router", it)
-            }
         }
 
         AppRoutes.Home.register {
@@ -38,5 +35,4 @@ class NotSimpleActivity : AppCompatActivity() {
 
         AppRouter.push(AppRoutes.Home)
     }
-
 }
