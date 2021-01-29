@@ -7,6 +7,7 @@ import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main_simple.*
 import nolambda.linkrouter.examples.notsimple.NotSimpleActivity
+import nolambda.linkrouter.examples.picker.PickerExampleFragmentScreen
 import nolambda.linkrouter.examples.picker.PickerExampleScreen
 
 class MainActivity : AppCompatActivity() {
@@ -21,9 +22,22 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(applicationContext, NotSimpleActivity::class.java))
         }
 
+
+        /* --------------------------------------------------- */
+        /* > Picker */
+        /* --------------------------------------------------- */
+
         btnNavigatePicker.setOnClickListener {
             startActivity(Intent(applicationContext, PickerExampleScreen::class.java))
         }
+
+        btnNavigatePickerFragment.setOnClickListener {
+            startActivity(Intent(applicationContext, PickerExampleFragmentScreen::class.java))
+        }
+
+        /* --------------------------------------------------- */
+        /* > Simple */
+        /* --------------------------------------------------- */
 
         btnNavigateTwo.setOnClickListener {
             router.goTo("sample://fragment/first")

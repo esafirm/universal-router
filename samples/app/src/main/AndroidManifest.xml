@@ -26,6 +26,7 @@
         <!-- ============================================= -->
 
         <activity android:name=".picker.PickerExampleScreen" />
+        <activity android:name=".picker.PickerExampleFragmentScreen" />
         <activity android:name=".picker.ResultPickerScreen" />
     </application>
 

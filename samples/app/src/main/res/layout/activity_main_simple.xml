@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".MainActivity">
 
     <Button
@@ -13,6 +14,19 @@
         android:layout_height="wrap_content"
         android:text="Go to Not Simple" />
 
+    <Button
+        android:id="@+id/btnNavigateTwo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Got to simple sample" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Picker Samples"
+        android:textColor="#000"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/btnNavigatePicker"
@@ -21,9 +35,9 @@
         android:text="Go to Picker" />
 
     <Button
-        android:id="@+id/btnNavigateTwo"
+        android:id="@+id/btnNavigatePickerFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Got to simple sample" />
+        android:text="Go to Picker Fragment" />
 
 </LinearLayout>
