@@ -138,7 +138,7 @@ abstract class AbstractAppRouter<Extra>(
         param: RouteParam<*, *>
     ) = simpleRouter.resolve(route).invoke(param)
 
-    private fun invokeProcessor(result: Any?, info: ActionInfo) {
+    protected open fun invokeProcessor(result: Any?, info: ActionInfo) {
         if (result == null) return
         if (processors.isEmpty()) return
 

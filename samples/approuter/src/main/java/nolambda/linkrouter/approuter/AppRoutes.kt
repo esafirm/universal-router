@@ -1,5 +1,7 @@
 package nolambda.linkrouter.approuter
 
+import android.content.Intent
+import androidx.activity.result.ActivityResultLauncher
 import nolambda.linkrouter.DeepLinkUri
 import nolambda.linkrouter.android.BaseRoute
 import nolambda.linkrouter.android.Route
@@ -7,7 +9,7 @@ import nolambda.linkrouter.android.RouteHandler
 import nolambda.linkrouter.android.RouteParam
 import nolambda.linkrouter.android.RouteWithParam
 import nolambda.linkrouter.android.autoregister.AutoRegister
-import nolambda.linkrouter.android.autoregister.RouteAutoRegisterMiddleware
+import nolambda.linkrouter.android.extra.fragment.ActivityResultLauncherMiddleWare
 import nolambda.linkrouter.android.measure.DefaultMeasureConfig
 import nolambda.linkrouter.android.measure.MeasuredAbstractAppRouter
 import nolambda.linkrouter.android.middlewares.MiddleWareResult
@@ -32,7 +34,8 @@ class AppRoutes {
 
 data class AppState(
     val isLoggedIn: Boolean,
-    val heavyState: () -> String
+    val heavyState: () -> String,
+    val launcher: ActivityResultLauncher<Intent>? = null
 )
 
 private val logMiddleWare = object : Middleware<AppState> {
@@ -52,7 +55,9 @@ private val logMiddleWare = object : Middleware<AppState> {
 object AppRouter : MeasuredAbstractAppRouter<AppState>(
     DefaultMeasureConfig(),
     logMiddleWare,
-    RouteAutoRegisterMiddleware() as Middleware<AppState>
+    ActivityResultLauncherMiddleWare { prev, launcher ->
+        prev!!.copy(launcher = launcher)
+    }
 )
 
 fun <P : Any, R> BaseRoute<P>.register(handler: RouteHandler<P, R, AppState>) {
