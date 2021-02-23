@@ -37,7 +37,7 @@ abstract class MeasuredAbstractAppRouter<Extra>(
         super.push(route)
     }
 
-    override fun goTo(uri: String): Boolean = measureAndLog("goTo $uri") {
+    override fun goTo(uri: String) = measureAndLog("goTo $uri") {
         super.goTo(uri)
     }
 

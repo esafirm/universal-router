@@ -7,6 +7,7 @@ import nolambda.linkrouter.DeepLinkUri
 import nolambda.linkrouter.android.AndroidRoutes.HomeRoute
 import nolambda.linkrouter.android.AndroidRoutes.ProductDetailRoute
 import nolambda.linkrouter.android.AndroidRoutes.UserRouter
+import nolambda.linkrouter.error.RouteNotFoundException
 
 object AndroidRoutes {
     object HomeRoute : Route()
@@ -25,98 +26,92 @@ object AndroidRoutes {
     object PathNoMap : RouteWithParam<String>("app://appkeren")
 }
 
-internal object TestRouter : AbstractAppRouter<Unit>()
-
-internal fun <P : Any, R> BaseRoute<P>.register(handler: RouteHandler<P, R, Unit>) {
-    TestRouter.register(this, handler)
-}
 
 class RouterSpec : StringSpec({
 
+    val testRouter = object : AbstractAppRouter<Unit>() {}
+
     "routing should be working" {
-        var homeState = false
-        HomeRoute.register {
-            homeState = true
-        }
+        testRouter.register(HomeRoute) { true }
+        val result = testRouter.push(HomeRoute)
 
-        TestRouter.push(HomeRoute)
-
-        homeState shouldBe true
+        result.isHandled shouldBe true
+        result.getResultOrError<Boolean>() shouldBe true
     }
 
     "routing with parameter should be working" {
-        var userId = 0
-        UserRouter.register {
-            userId = it.param?.userId?.toInt() ?: 0
+        testRouter.register(UserRouter) {
+            it.param?.userId?.toInt() ?: 0
         }
 
-        TestRouter.push(UserRouter, UserRouter.UserParam("1"))
+        val result = testRouter.push(UserRouter, UserRouter.UserParam("1"))
+        val userId: Int = result.getResultOrError()
 
         userId shouldBe 1
     }
 
     "routing with uri in route with param should be working" {
-        TestRouter.cleanRouter()
+        testRouter.cleanRouter()
 
-        var userId = 0
-        UserRouter.register {
-            userId = it.param?.userId?.toInt() ?: 0
+        testRouter.register(UserRouter) {
+            it.param?.userId?.toInt() ?: 0
         }
 
-        val result = TestRouter.goTo("nolambda://user/1")
+        val result = testRouter.goTo("nolambda://user/1")
+        val userId: Int = result.getResultOrError()
 
-        result shouldBe true
+        result.isHandled shouldBe true
         userId shouldBe 1
     }
 
     "routing with uri containing query should be working" {
-        TestRouter.cleanRouter()
+        testRouter.cleanRouter()
 
-        var userId = 0
-        UserRouter.register {
-            userId = it.param?.userId?.toInt() ?: 0
+        testRouter.register(UserRouter) {
+            it.param?.userId?.toInt() ?: 0
         }
 
-        TestRouter.goTo("app://user?user_id=1")
+        val result = testRouter.goTo("app://user?user_id=1")
+        val userId = result.getResultOrError<Int>()
 
         userId shouldBe 1
     }
 
     "routing another uri in route should be working" {
-        TestRouter.cleanRouter()
+        testRouter.cleanRouter()
 
-        var userId = 0
-        UserRouter.register {
-            userId = it.param?.userId?.toInt() ?: 0
+        testRouter.register(UserRouter) {
+            it.param?.userId?.toInt() ?: 0
         }
 
-        TestRouter.goTo("https://nolambda.stream/1")
+        val result = testRouter.goTo("https://nolambda.stream/1")
+        val userId: Int = result.getResultOrError()
 
         userId shouldBe 1
     }
 
-    "routing non exist path should not trigger execption" {
-        TestRouter.cleanRouter()
+    "routing non exist path should not trigger exception" {
+        testRouter.cleanRouter()
 
-        val result = TestRouter.goTo("testing://aaa")
-        result shouldBe false
+        val result = testRouter.goTo("testing://aaa")
+        result.isHandled shouldBe false
     }
 
     "param mapper should be working" {
-        TestRouter.cleanRouter()
+        testRouter.cleanRouter()
 
-        var userId = 0
-        UserRouter.register {
-            userId = it.param!!.userId.toInt()
+        testRouter.register(UserRouter) {
+            it.param!!.userId.toInt()
         }
 
-        TestRouter.goTo("nolambda://user/1")
+        val result = testRouter.goTo("nolambda://user/1")
+        val userId: Int = result.getResultOrError()
 
         userId shouldBe 1
     }
 
     "processor invoked when the type is right" {
-        TestRouter.cleanRouter()
+        testRouter.cleanRouter()
 
         open class Parent
         class Child : Parent()
@@ -128,23 +123,23 @@ class RouterSpec : StringSpec({
         val returnedString = "This is home route"
         val returnedChild = Child()
 
-        HomeRoute.register { returnedString }
-        ProductDetailRoute.register { returnedChild }
+        testRouter.register(HomeRoute) { returnedString }
+        testRouter.register(ProductDetailRoute) { returnedChild }
 
-        TestRouter.addProcessor<String> { it, _ ->
+        testRouter.addProcessor<String> { it, _ ->
             stringInvoked = true
             it shouldBe returnedString
         }
-        TestRouter.addProcessor<Int> { _, _ ->
+        testRouter.addProcessor<Int> { _, _ ->
             intInvoked = true
         }
-        TestRouter.addProcessor<Child> { it, _ ->
+        testRouter.addProcessor<Child> { it, _ ->
             childInvoked = true
             it shouldBe returnedChild
         }
 
-        TestRouter.push(HomeRoute)
-        TestRouter.push(ProductDetailRoute)
+        testRouter.push(HomeRoute)
+        testRouter.push(ProductDetailRoute)
 
         stringInvoked shouldBe true
         intInvoked shouldBe false
@@ -152,29 +147,29 @@ class RouterSpec : StringSpec({
     }
 
     "it should throw exception if route is not registered" {
-        TestRouter.cleanRouter()
-        shouldThrow<IllegalStateException> {
-            TestRouter.push(HomeRoute)
+        testRouter.cleanRouter()
+        shouldThrow<RouteNotFoundException> {
+            testRouter.push(HomeRoute)
         }
     }
 
     "it should throw exception if trying to use uri without defining mapUri" {
-        TestRouter.cleanRouter()
+        testRouter.cleanRouter()
 
-        TestRouter.register(AndroidRoutes.PathNoMap) { "" }
+        testRouter.register(AndroidRoutes.PathNoMap) { "" }
         shouldThrow<IllegalStateException> {
-            TestRouter.goTo("app://appkeren")
+            testRouter.goTo("app://appkeren")
         }
     }
 
     "it should trigger error handler from plugin" {
-        TestRouter.cleanRouter()
+        testRouter.cleanRouter()
 
         var isInvoked = false
         RouterPlugin.errorHandler = {
             isInvoked = true
         }
-        TestRouter.push(HomeRoute)
+        testRouter.push(HomeRoute)
 
         isInvoked shouldBe true
     }

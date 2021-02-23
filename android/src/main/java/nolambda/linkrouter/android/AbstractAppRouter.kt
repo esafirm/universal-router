@@ -81,46 +81,52 @@ abstract class AbstractAppRouter<Extra>(
         return resolveUri(uri) != null
     }
 
-    override fun goTo(uri: String): Boolean {
-        try {
-            val result = resolveUri(uri) ?: return false
+    override fun goTo(uri: String): RouteResult {
+        return try {
+            val result = resolveUri(uri) ?: return RouteResult(false)
             val (deepLinkUri, route, param) = result
             val routeParam = if (route is RouteWithParam<*>) {
                 route.mapUri(deepLinkUri, param)
             } else null
-            processRoute(route, routeParam, createInfo(uri))
-            return true
+            val routeResult = processRoute(route, routeParam, createInfo(uri))
+            RouteResult(true, routeResult)
         } catch (e: Exception) {
             e.handleError()
-        }
-        return false
-    }
-
-    override fun <P : Any> push(route: RouteWithParam<P>, param: P) {
-        try {
-            processRoute(route, param, createInfo())
-        } catch (e: Exception) {
-            e.handleError()
+            RouteResult(false)
         }
     }
 
-    override fun push(route: Route) {
-        try {
-            processRoute(route, null, createInfo())
+    override fun <P : Any> push(route: RouteWithParam<P>, param: P): RouteResult {
+        return try {
+            val result = processRoute(route, param, createInfo())
+            RouteResult(true, result)
         } catch (e: Exception) {
             e.handleError()
+            RouteResult(false)
+        }
+    }
+
+    override fun push(route: Route): RouteResult {
+        return try {
+            val result = processRoute(route, null, createInfo())
+            RouteResult(true, result)
+        } catch (e: Exception) {
+            e.handleError()
+            RouteResult(false)
         }
     }
 
     private fun Throwable.handleError() = RouterPlugin.errorHandler(this)
 
-    private fun <P : Any> processRoute(route: BaseRoute<P>, param: P?, actionInfo: ActionInfo) {
+    private fun <P : Any> processRoute(route: BaseRoute<P>, param: P?, actionInfo: ActionInfo): Any? {
         val routeParam = RouteParam<P, Extra>(
             info = actionInfo,
             param = param
         )
         val (finalRoute, finalParam) = applyMiddleware(route, routeParam)
-        invokeProcessor(simpleResolve(finalRoute, finalParam), actionInfo)
+        val result = simpleResolve(finalRoute, finalParam)
+        invokeProcessor(result, actionInfo)
+        return result
     }
 
     protected open fun <P : Any> applyMiddleware(
