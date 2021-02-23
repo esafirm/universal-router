@@ -44,10 +44,10 @@ interface RouterComponents {
 
 interface RouterProcessor<Extra> {
     fun <P : Any, R> register(route: BaseRoute<P>, handler: RouteHandler<P, R, Extra>)
-    fun goTo(uri: String): Boolean
     fun canHandle(uri: String): Boolean
-    fun push(route: Route)
-    fun <P : Any> push(route: RouteWithParam<P>, param: P)
+    fun goTo(uri: String): RouteResult
+    fun push(route: Route): RouteResult
+    fun <P : Any> push(route: RouteWithParam<P>, param: P): RouteResult
 }
 
 interface AppRouter<Extra> : RouterProcessor<Extra>, RouterComponents

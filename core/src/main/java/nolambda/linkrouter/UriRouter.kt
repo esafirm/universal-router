@@ -14,16 +14,16 @@ abstract class UriRouter<RES>(
         entries.clear()
     }
 
-    override fun resolve(param: String): RES? {
-        val filteredMap = entries.filter { it.key.matches(param) }
+    override fun resolve(route: String): RES? {
+        val filteredMap = entries.filter { it.key.matches(route) }
         if (filteredMap.isEmpty()) {
-            logger?.invoke("Path not implemented $param")
+            logger?.invoke("Path not implemented $route")
             return null
         }
         val deepLinkEntry = filteredMap.keys.first()
         val handler = filteredMap[deepLinkEntry]
 
-        val deepLinkUri = param.toDeepLinkUri()
+        val deepLinkUri = route.toDeepLinkUri()
         val parameters = deepLinkEntry.getParameters(deepLinkUri)
         return handler!!.invoke(deepLinkUri, parameters)
     }
