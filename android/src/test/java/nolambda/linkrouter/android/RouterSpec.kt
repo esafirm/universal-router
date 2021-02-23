@@ -7,6 +7,7 @@ import nolambda.linkrouter.DeepLinkUri
 import nolambda.linkrouter.android.AndroidRoutes.HomeRoute
 import nolambda.linkrouter.android.AndroidRoutes.ProductDetailRoute
 import nolambda.linkrouter.android.AndroidRoutes.UserRouter
+import nolambda.linkrouter.error.RouteNotFoundException
 
 object AndroidRoutes {
     object HomeRoute : Route()
@@ -89,11 +90,11 @@ class RouterSpec : StringSpec({
         userId shouldBe 1
     }
 
-    "routing non exist path should not trigger execption" {
+    "routing non exist path should not trigger exception" {
         testRouter.cleanRouter()
 
         val result = testRouter.goTo("testing://aaa")
-        result shouldBe false
+        result.isHandled shouldBe false
     }
 
     "param mapper should be working" {
@@ -147,7 +148,7 @@ class RouterSpec : StringSpec({
 
     "it should throw exception if route is not registered" {
         testRouter.cleanRouter()
-        shouldThrow<IllegalStateException> {
+        shouldThrow<RouteNotFoundException> {
             testRouter.push(HomeRoute)
         }
     }
