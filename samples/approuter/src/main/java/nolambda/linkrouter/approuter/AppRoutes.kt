@@ -11,6 +11,7 @@ import nolambda.linkrouter.android.RouteWithParam
 import nolambda.linkrouter.android.autoregister.AutoRegister
 import nolambda.linkrouter.android.extra.fragment.ActivityResultLauncherMiddleWare
 import nolambda.linkrouter.android.measure.DefaultMeasureConfig
+import nolambda.linkrouter.android.measure.MeasureMiddleWare
 import nolambda.linkrouter.android.measure.MeasuredAbstractAppRouter
 import nolambda.linkrouter.android.middlewares.MiddleWareResult
 import nolambda.linkrouter.android.middlewares.Middleware
@@ -51,13 +52,20 @@ private val logMiddleWare = object : Middleware<AppState> {
     }
 }
 
+private val MEASURE_CONFIG = DefaultMeasureConfig()
+
 @OptIn(AutoRegister::class)
 object AppRouter : MeasuredAbstractAppRouter<AppState>(
-    DefaultMeasureConfig(),
-    logMiddleWare,
-    ActivityResultLauncherMiddleWare { prev, launcher ->
-        prev!!.copy(launcher = launcher)
-    }
+    MEASURE_CONFIG,
+    MeasureMiddleWare(
+        measureConfig = MEASURE_CONFIG,
+        middleWares = listOf(
+            logMiddleWare,
+            ActivityResultLauncherMiddleWare { prev, launcher ->
+                prev!!.copy(launcher = launcher)
+            }
+        )
+    )
 )
 
 fun <P : Any, R> BaseRoute<P>.register(handler: RouteHandler<P, R, AppState>) {
