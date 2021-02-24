@@ -1,6 +1,6 @@
 package nolambda.linkrouter.android.test
 
-import nolambda.linkrouter.android.AbstractAppRouter
+import nolambda.linkrouter.android.AppRouter
 import nolambda.linkrouter.android.BaseRoute
 import nolambda.linkrouter.android.RouteParam
 
@@ -15,7 +15,7 @@ typealias DeepLinkAssertion<P, E> = (DeepLinkAssertionData<P, E>) -> Unit
 typealias DeepLinkTestPair<P, E> = Pair<String, DeepLinkAssertion<P, E>>
 typealias DeepLinkRoute<P, E> = Pair<BaseRoute<P>, List<DeepLinkTestPair<P, E>>>
 
-fun <P : Any, E> AbstractAppRouter<E>.testDeepLink(
+fun <P : Any, E> AppRouter<E>.testDeepLink(
     deepLinkData: List<DeepLinkRoute<P, E>>,
     clean: Boolean = true
 ) {
