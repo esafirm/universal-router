@@ -16,7 +16,7 @@ class RetainedComposedResultProcessor<R>(
     private lateinit var tracker: ResultProcessorIndexTracker
 
     init {
-        check(processors.isEmpty()) {
+        check(processors.isNotEmpty()) {
             "Composed processors cannot be empty!"
         }
     }
@@ -40,6 +40,7 @@ class RetainedComposedResultProcessor<R>(
                 onResult.invoke(lastResult)
                 // reset the retain index
                 tracker.reset()
+                return@process
             }
 
             callProcessors(nextIndex, result, onResult)

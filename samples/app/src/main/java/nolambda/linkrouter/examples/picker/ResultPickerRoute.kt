@@ -5,10 +5,11 @@ import nolambda.linkrouter.android.Route
 import nolambda.linkrouter.android.extra.fragment.RouteResultLauncher
 import nolambda.linkrouter.android.extra.fragment.registerRouteForResult
 import nolambda.linkrouter.android.extra.fragment.scenario.ActivityHost
-import nolambda.linkrouter.android.extra.fragment.scenario.processor.RetainedScenarioResultProcessor
+import nolambda.linkrouter.android.extra.fragment.scenario.FragmentHost
 import nolambda.linkrouter.android.extra.fragment.scenario.Scenario
 import nolambda.linkrouter.android.extra.fragment.scenario.ScenarioHost
 import nolambda.linkrouter.android.extra.fragment.scenario.processor.RetainedComposedResultProcessor
+import nolambda.linkrouter.android.extra.fragment.scenario.processor.RetainedScenarioResultProcessor
 import nolambda.linkrouter.android.extra.fragment.scenario.processor.ScenarioResultProcessor
 import nolambda.linkrouter.approuter.AppRouter
 
@@ -45,9 +46,13 @@ class A : RetainedScenarioResultProcessor<String> {
     }
 
     override fun onRegister(host: ScenarioHost, continuation: (ActivityResult) -> Unit) {
-        caller = (host as ActivityHost).activity.registerRouteForResult(ResultPickerRoute) {
+        val callback = { it: ActivityResult ->
             theResult = "ABC"
             continuation.invoke(it)
+        }
+        caller = when (host) {
+            is ActivityHost -> host.activity.registerRouteForResult(ResultPickerRoute, callback)
+            is FragmentHost -> host.fragment.registerRouteForResult(ResultPickerRoute, callback)
         }
     }
 }

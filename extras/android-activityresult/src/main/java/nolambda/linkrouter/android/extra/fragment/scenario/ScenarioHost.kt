@@ -18,5 +18,5 @@ val ScenarioHost.viewModelStore: ViewModelStoreOwner
 val ScenarioHost.lifecycle: Lifecycle
     get() = when (this) {
         is ActivityHost -> activity.lifecycle
-        is FragmentHost -> fragment.viewLifecycleOwner.lifecycle
+        is FragmentHost -> fragment.lifecycle
     }

@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.fragment.app.Fragment
 import nolambda.linkrouter.android.Route
 import nolambda.linkrouter.android.RouteWithParam
 import nolambda.linkrouter.android.extra.fragment.createLauncher
@@ -25,6 +26,24 @@ fun <R> ComponentActivity.registerScenarioForResult(
     onCallback: (R) -> Unit
 ): ScenarioLauncher {
     val host = ActivityHost(this)
+    val internalLauncher = createInternalLauncher(host, scenario, onCallback)
+    return ScenarioLauncher(internalLauncher, scenario.route as Route)
+}
+
+fun <P : Any, R> Fragment.registerScenarioForResult(
+    scenario: Scenario<P, R>,
+    onCallback: (R) -> Unit
+): ParameterizedScenarioLauncher<P> {
+    val host = FragmentHost(this)
+    val internalLauncher = createInternalLauncher(host, scenario, onCallback)
+    return ParameterizedScenarioLauncher(internalLauncher, scenario.route as RouteWithParam<P>)
+}
+
+fun <R> Fragment.registerScenarioForResult(
+    scenario: Scenario<Unit, R>,
+    onCallback: (R) -> Unit
+): ScenarioLauncher {
+    val host = FragmentHost(this)
     val internalLauncher = createInternalLauncher(host, scenario, onCallback)
     return ScenarioLauncher(internalLauncher, scenario.route as Route)
 }
