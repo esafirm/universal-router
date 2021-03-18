@@ -24,7 +24,7 @@ class PickerResultProcessor : ScenarioResultProcessor<String> {
 class ResultPickerScenario : Scenario<Unit, String>() {
     override val route = ResultPickerRoute
     override val processor = RetainedComposedResultProcessor(
-        processors = listOf(A(), A())
+        processors = listOf(SampleScenarioResultProcessor(), SampleScenarioResultProcessor())
     )
 }
 
@@ -32,7 +32,7 @@ class ResultPickerScenario : Scenario<Unit, String>() {
 /* > Test */
 /* --------------------------------------------------- */
 
-class A : RetainedScenarioResultProcessor<String> {
+class SampleScenarioResultProcessor : RetainedScenarioResultProcessor<String> {
 
     private var theResult: String? = null
     private lateinit var caller: RouteResultLauncher
