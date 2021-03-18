@@ -28,7 +28,7 @@ class PickerResultProcessor : ScenarioResultProcessor<String> {
 class ResultPickerScenario : Scenario<Unit, String>() {
     override val route = ResultPickerRoute
     override val processor = RetainedComposedResultProcessor(
-        processors = listOf(CallbackResultProcessor(), CallbackResultProcessor())
+        processors = listOf(PickAgainResultProcessor(), PickAgainResultProcessor())
     )
 }
 
@@ -53,12 +53,18 @@ class SimpleResultProcessor(private val data: String) : ScenarioResultProcessor<
     }
 }
 
-abstract class AbsRetainedScenarioResultProcessor<R> : RetainedScenarioResultProcessor<R> {
+abstract class CallbackScenarioResultProcessor<R> : RetainedScenarioResultProcessor<R> {
 
     private var processorResult: R? = null
+    private lateinit var theContinuation: (ActivityResult) -> Unit
 
-    protected fun setResult(result: R) {
-        this.processorResult = result
+    override fun onRegister(host: ScenarioHost, continuation: (ActivityResult) -> Unit) {
+        theContinuation = continuation
+        onPrepareCaller(host, object : OnResult<R> {
+            override fun continueWith(result: R) {
+                processorResult = result
+            }
+        })
     }
 
     override fun process(result: ActivityResult, lastResult: R?, onResult: OnResult<R>) {
@@ -70,6 +76,7 @@ abstract class AbsRetainedScenarioResultProcessor<R> : RetainedScenarioResultPro
         }
     }
 
+    abstract fun onPrepareCaller(host: ScenarioHost, onResult: OnResult<R>)
     abstract fun onHandleProcess(result: ActivityResult, lastResult: R?, onResult: OnResult<R>)
 
     override fun onClear() {
@@ -77,18 +84,18 @@ abstract class AbsRetainedScenarioResultProcessor<R> : RetainedScenarioResultPro
     }
 }
 
-class CallbackResultProcessor : AbsRetainedScenarioResultProcessor<String>() {
+class PickAgainResultProcessor : CallbackScenarioResultProcessor<String>() {
 
     private lateinit var caller: RouteResultLauncher
 
-    override fun onRegister(host: ScenarioHost, continuation: (ActivityResult) -> Unit) {
+    override fun onPrepareCaller(host: ScenarioHost, onResult: OnResult<String>) {
         val callback = { it: ActivityResult ->
-            if (it.resultCode == Activity.RESULT_OK) {
-                setResult("ABC")
+            val result = if (it.resultCode == Activity.RESULT_OK) {
+                "ABC"
             } else {
-                setResult("CANCELLED")
+                "CANCELLED"
             }
-            continuation.invoke(it)
+            onResult.continueWith(result)
         }
         caller = when (host) {
             is ActivityHost -> host.activity.registerRouteForResult(ResultPickerRoute, callback)
