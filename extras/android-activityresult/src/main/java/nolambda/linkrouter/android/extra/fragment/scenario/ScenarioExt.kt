@@ -10,6 +10,7 @@ import nolambda.linkrouter.android.RouteWithParam
 import nolambda.linkrouter.android.extra.fragment.createLauncher
 import nolambda.linkrouter.android.extra.fragment.scenario.launcher.ParameterizedScenarioLauncher
 import nolambda.linkrouter.android.extra.fragment.scenario.launcher.ScenarioLauncher
+import nolambda.linkrouter.android.extra.fragment.scenario.processor.OnResult
 import nolambda.linkrouter.android.extra.fragment.scenario.processor.RetainedScenarioResultProcessor
 
 fun <P : Any, R> ComponentActivity.registerScenarioForResult(
@@ -56,7 +57,15 @@ private fun <R> createInternalLauncher(
     val processor = scenario.processor
 
     val continuation = { activityResult: ActivityResult ->
-        processor.process(activityResult, onCallback)
+        processor.process(activityResult, null, object : OnResult<R> {
+            override fun continueWith(result: R) {
+                onCallback(result)
+
+                if (processor is RetainedScenarioResultProcessor<R>) {
+                    processor.onClear()
+                }
+            }
+        })
     }
     if (processor is RetainedScenarioResultProcessor<R>) {
         processor.onRegister(host, continuation)

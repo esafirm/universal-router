@@ -41,6 +41,10 @@ class PickerFragment : Fragment(R.layout.activity_picker_example) {
         btn_picker_scenario.setOnClickListener {
             showPickerScenario.launch(AppRouter)
         }
+
+        btn_picker_scenario_simple.setOnClickListener {
+            simpleScenarioLauncher.launch(AppRouter)
+        }
     }
 
     private val showPicker = registerRouteForResult(ResultPickerRoute) {
@@ -48,6 +52,10 @@ class PickerFragment : Fragment(R.layout.activity_picker_example) {
     }
 
     private val showPickerScenario = registerScenarioForResult(ResultPickerScenario()) {
+        txt_result.text = it
+    }
+
+    private val simpleScenarioLauncher = registerScenarioForResult(SimpleResultPickerScenario()) {
         txt_result.text = it
     }
 }

@@ -17,6 +17,12 @@
         android:layout_height="wrap_content"
         android:text="Show Picker - Scenario" />
 
+    <Button
+        android:id="@+id/btn_picker_scenario_simple"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Show Picker - Scenario - Simple" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

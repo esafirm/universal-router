@@ -21,31 +21,34 @@ class RetainedComposedResultProcessor<R>(
         }
     }
 
-    override fun process(result: ActivityResult, onResult: (R) -> Unit) {
+    override fun process(result: ActivityResult, lastResult: R?, onResult: OnResult<R>) {
         val firstIndex = tracker.index
-        callProcessors(firstIndex, result, onResult)
+        callProcessors(firstIndex, result, lastResult, onResult)
     }
 
     private fun callProcessors(
         index: Int,
-        result: ActivityResult,
-        onResult: (R) -> Unit
+        activityResult: ActivityResult,
+        lastResult: R?,
+        onResult: OnResult<R>
     ) {
         val currentProcessor = processors[index]
-        currentProcessor.process(result) { lastResult ->
-            val nextIndex = index + 1
-            val nextProcessor = processors.getOrNull(nextIndex)
-            if (nextProcessor == null) {
-                // call last callback
-                onResult.invoke(lastResult)
-                // reset the retain index
-                tracker.reset()
-                return@process
-            }
+        currentProcessor.process(activityResult, lastResult, object : OnResult<R> {
+            override fun continueWith(result: R) {
+                val nextIndex = index + 1
+                val nextProcessor = processors.getOrNull(nextIndex)
+                if (nextProcessor == null) {
+                    // call last callback
+                    onResult.continueWith(result)
+                    // reset the retain index
+                    tracker.reset()
+                    return
+                }
 
-            callProcessors(nextIndex, result, onResult)
-            tracker.index = index
-        }
+                callProcessors(nextIndex, activityResult, result, onResult)
+                tracker.index = index
+            }
+        })
     }
 
     override fun onRegister(host: ScenarioHost, continuation: (ActivityResult) -> Unit) {
@@ -60,5 +63,9 @@ class RetainedComposedResultProcessor<R>(
         processors.forEach {
             it.onRegister(host, continuation)
         }
+    }
+
+    override fun onClear() {
+        processors.forEach { it.onClear() }
     }
 }
