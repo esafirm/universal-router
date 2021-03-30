@@ -13,7 +13,7 @@ abstract class AbstractAppRouter<Extra>(
 ) : AppRouter<Extra> {
 
     private class AndroidSimpleRouter : SimpleRouter<RouteHandler<*, *, *>>()
-    private class AndroidUriRouter : UriRouter<UriRoute>(RouterPlugin.logger)
+    private class AndroidUriRouter : UriRouter<UriResult>(RouterPlugin.logger)
 
     private val simpleRouter by lazy { AndroidSimpleRouter() }
     private val uriRouter by lazy { AndroidUriRouter() }
@@ -70,12 +70,12 @@ abstract class AbstractAppRouter<Extra>(
         paths.forEach { path ->
             if (path.isBlank()) return@forEach
             uriRouter.addEntry(path) { uri, param ->
-                UriRoute(uri, route as BaseRoute<Any>, param)
+                UriResult(uri, route as BaseRoute<Any>, param)
             }
         }
     }
 
-    private fun resolveUri(uri: String) = uriRouter.resolve(uri)
+    override fun resolveUri(uri: String) = uriRouter.resolve(uri)
 
     override fun canHandle(uri: String): Boolean {
         return resolveUri(uri) != null

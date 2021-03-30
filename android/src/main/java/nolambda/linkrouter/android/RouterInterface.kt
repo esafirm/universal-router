@@ -1,7 +1,5 @@
 package nolambda.linkrouter.android
 
-import nolambda.linkrouter.DeepLinkUri
-
 typealias RouteHandler<P, R, E> = (RouteParam<P, E>) -> R
 typealias RouteProcessor<T> = (T, ActionInfo) -> Unit
 
@@ -27,15 +25,6 @@ data class ActionInfo(
     val isTriggeredByUri = uri.isNullOrEmpty().not()
 }
 
-/**
- * URI Router resolved data
- */
-internal data class UriRoute(
-    val uri: DeepLinkUri,
-    val route: BaseRoute<Any>,
-    val param: Map<String, String>
-)
-
 interface RouterComponents {
     fun cleanRouter()
     fun removeProcessor(processor: RouteProcessor<*>)
@@ -44,7 +33,21 @@ interface RouterComponents {
 
 interface RouterProcessor<Extra> {
     fun <P : Any, R> register(route: BaseRoute<P>, handler: RouteHandler<P, R, Extra>)
+
+    /**
+     * @param uri - URI to be resolved
+     * @return null if there's no matching uri register in the router
+     * otherwise return [UriResult]
+     */
+    fun resolveUri(uri: String): UriResult?
+
+    /**
+     * @param uri - URI to be resolved
+     * @return false if there's no matching uri
+     */
     fun canHandle(uri: String): Boolean
+
+
     fun goTo(uri: String): RouteResult
     fun push(route: Route): RouteResult
     fun <P : Any> push(route: RouteWithParam<P>, param: P): RouteResult
