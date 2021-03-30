@@ -7,6 +7,6 @@ import nolambda.linkrouter.DeepLinkUri
  */
 data class UriResult(
     val uri: DeepLinkUri,
-    val route: BaseRoute<Any>,
+    val route: BaseRoute<*>,
     val param: Map<String, String>
 )

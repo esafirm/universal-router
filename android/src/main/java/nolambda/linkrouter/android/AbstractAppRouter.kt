@@ -88,7 +88,7 @@ abstract class AbstractAppRouter<Extra>(
             val routeParam = if (route is RouteWithParam<*>) {
                 route.mapUri(deepLinkUri, param)
             } else null
-            val routeResult = processRoute(route, routeParam, createInfo(uri))
+            val routeResult = processRoute(route as BaseRoute<Any>, routeParam, createInfo(uri))
             RouteResult(true, routeResult)
         } catch (e: Exception) {
             e.handleError()
