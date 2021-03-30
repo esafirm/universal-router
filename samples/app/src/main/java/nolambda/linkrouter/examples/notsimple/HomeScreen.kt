@@ -14,7 +14,7 @@ class HomeScreen : Fragment(R.layout.fragment_sample_home) {
             AppRouter.push(AppRoutes.Product, AppRoutes.Product.ProductParam("123"))
         }
         btnGoToProductTwo.setOnClickListener {
-            AppRouter.goTo("https://m.bukatoko.com/123")
+            AppRouter.goTo("https://m.bukatoko.com/product/123")
         }
     }
 }

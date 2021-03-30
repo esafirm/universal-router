@@ -1,1 +1,11 @@
-<manifest package="nolambda.linkrouter.product"></manifest>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="nolambda.linkrouter.product">
+
+    <application>
+        <provider
+            android:name=".ProductRouterInitializer"
+            android:authorities="universal.router.product"
+            android:exported="false" />
+    </application>
+
+</manifest>

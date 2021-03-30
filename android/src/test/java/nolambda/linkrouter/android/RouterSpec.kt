@@ -6,13 +6,13 @@ import io.kotest.matchers.shouldBe
 import nolambda.linkrouter.DeepLinkUri
 import nolambda.linkrouter.android.AndroidRoutes.HomeRoute
 import nolambda.linkrouter.android.AndroidRoutes.ProductDetailRoute
-import nolambda.linkrouter.android.AndroidRoutes.UserRouter
+import nolambda.linkrouter.android.AndroidRoutes.UserRoute
 import nolambda.linkrouter.error.RouteNotFoundException
 
 object AndroidRoutes {
     object HomeRoute : Route()
     object ProductDetailRoute : Route()
-    object UserRouter : RouteWithParam<UserRouter.UserParam>(
+    object UserRoute : RouteWithParam<UserRoute.UserParam>(
         "nolambda://user/{user_id}", "https://nolambda.stream/{user_id}", "app://user"
     ) {
         data class UserParam(val userId: String)
@@ -40,11 +40,11 @@ class RouterSpec : StringSpec({
     }
 
     "routing with parameter should be working" {
-        testRouter.register(UserRouter) {
+        testRouter.register(UserRoute) {
             it.param?.userId?.toInt() ?: 0
         }
 
-        val result = testRouter.push(UserRouter, UserRouter.UserParam("1"))
+        val result = testRouter.push(UserRoute, UserRoute.UserParam("1"))
         val userId: Int = result.getResultOrError()
 
         userId shouldBe 1
@@ -53,7 +53,7 @@ class RouterSpec : StringSpec({
     "routing with uri in route with param should be working" {
         testRouter.cleanRouter()
 
-        testRouter.register(UserRouter) {
+        testRouter.register(UserRoute) {
             it.param?.userId?.toInt() ?: 0
         }
 
@@ -67,7 +67,7 @@ class RouterSpec : StringSpec({
     "routing with uri containing query should be working" {
         testRouter.cleanRouter()
 
-        testRouter.register(UserRouter) {
+        testRouter.register(UserRoute) {
             it.param?.userId?.toInt() ?: 0
         }
 
@@ -80,7 +80,7 @@ class RouterSpec : StringSpec({
     "routing another uri in route should be working" {
         testRouter.cleanRouter()
 
-        testRouter.register(UserRouter) {
+        testRouter.register(UserRoute) {
             it.param?.userId?.toInt() ?: 0
         }
 
@@ -100,7 +100,7 @@ class RouterSpec : StringSpec({
     "param mapper should be working" {
         testRouter.cleanRouter()
 
-        testRouter.register(UserRouter) {
+        testRouter.register(UserRoute) {
             it.param!!.userId.toInt()
         }
 
@@ -172,5 +172,16 @@ class RouterSpec : StringSpec({
         testRouter.push(HomeRoute)
 
         isInvoked shouldBe true
+    }
+
+    "it should resolve to expected route" {
+        testRouter.cleanRouter()
+        testRouter.register(UserRoute) { }
+
+        val result = testRouter.resolveUri("nolambda://user/1")
+        result?.route shouldBe UserRoute
+
+        val emptyResult = testRouter.resolveUri("app://appkeren")
+        emptyResult shouldBe null
     }
 })
