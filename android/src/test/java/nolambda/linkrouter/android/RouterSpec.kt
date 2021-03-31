@@ -50,6 +50,24 @@ class RouterSpec : StringSpec({
         userId shouldBe 1
     }
 
+    "routing with different return type should be working" {
+        testRouter.cleanRouter()
+        testRouter.register(UserRoute) {
+            val userId = it.param?.userId ?: ""
+            if (userId == "1") {
+                true
+            } else {
+                1
+            }
+        }
+
+        val resultOne = testRouter.push(UserRoute, UserRoute.UserParam("1")).getResultOrError<Boolean>()
+        val resultTwo = testRouter.push(UserRoute, UserRoute.UserParam("2")).getResultOrError<Int>()
+
+        resultOne shouldBe true
+        resultTwo shouldBe 1
+    }
+
     "routing with uri in route with param should be working" {
         testRouter.cleanRouter()
 
