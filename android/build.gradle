@@ -6,4 +6,5 @@ dependencies {
     implementation deps.appCompat
 
     testImplementation testDeps
+    testImplementation project(':android-test')
 }
