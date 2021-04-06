@@ -14,10 +14,7 @@ dependencies {
     implementation 'com.google.auto.service:auto-service:1.0-rc6'
     kapt 'com.google.auto.service:auto-service:1.0-rc6'
 
-    final kotestVersion = "4.2.6"
-    testImplementation "io.kotest:kotest-runner-junit5:$kotestVersion"
-    testImplementation "io.kotest:kotest-assertions-core:$kotestVersion"
-    testImplementation libraries.mockk
+    testImplementation testDeps
 }
 
 repositories {

@@ -24,10 +24,6 @@ ext {
             compileSdk: 28,
             minSdk    : 19
     ]
-
-    libraries = [
-            mockk: "io.mockk:mockk:1.10.0"
-    ]
 }
 
 allprojects {

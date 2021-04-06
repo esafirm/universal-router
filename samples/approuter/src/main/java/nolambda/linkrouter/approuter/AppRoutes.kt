@@ -1,6 +1,7 @@
 package nolambda.linkrouter.approuter
 
 import android.content.Intent
+import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import nolambda.linkrouter.DeepLinkUri
 import nolambda.linkrouter.android.BaseRoute
@@ -9,7 +10,8 @@ import nolambda.linkrouter.android.RouteHandler
 import nolambda.linkrouter.android.RouteParam
 import nolambda.linkrouter.android.RouteWithParam
 import nolambda.linkrouter.android.autoregister.AutoRegister
-import nolambda.linkrouter.android.extra.fragment.ActivityResultLauncherMiddleWare
+import nolambda.linkrouter.android.extra.caller.ActivityResultLauncherMiddleWare
+import nolambda.linkrouter.android.extra.caller.CallerProviderMiddleware
 import nolambda.linkrouter.android.measure.DefaultMeasureConfig
 import nolambda.linkrouter.android.measure.MeasureMiddleWare
 import nolambda.linkrouter.android.measure.MeasuredAbstractAppRouter
@@ -36,7 +38,8 @@ class AppRoutes {
 data class AppState(
     val isLoggedIn: Boolean,
     val heavyState: () -> String,
-    val launcher: ActivityResultLauncher<Intent>? = null
+    val launcher: ActivityResultLauncher<Intent>? = null,
+    val caller: Any? = null
 )
 
 private val logMiddleWare = object : Middleware<AppState> {
@@ -61,6 +64,10 @@ object AppRouter : MeasuredAbstractAppRouter<AppState>(
         measureConfig = MEASURE_CONFIG,
         middleWares = listOf(
             logMiddleWare,
+            CallerProviderMiddleware { prev, caller ->
+                Log.d("Caller Middleware", "Caller: $caller")
+                prev!!.copy(caller = caller)
+            },
             ActivityResultLauncherMiddleWare { prev, launcher ->
                 prev!!.copy(launcher = launcher)
             }
