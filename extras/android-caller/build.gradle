@@ -2,7 +2,7 @@ apply from: "${buildSystemDir}/base.gradle"
 apply plugin: 'com.github.dcendents.android-maven'
 
 dependencies {
-    implementation project(':core')
+    implementation project(':android')
     implementation deps.appCompat
 
     testImplementation testDeps

@@ -3,17 +3,17 @@ package nolambda.linkrouter.examples.picker
 import android.app.Activity
 import androidx.activity.result.ActivityResult
 import nolambda.linkrouter.android.Route
-import nolambda.linkrouter.android.extra.fragment.RouteResultLauncher
-import nolambda.linkrouter.android.extra.fragment.registerRouteForResult
-import nolambda.linkrouter.android.extra.fragment.scenario.ActivityHost
-import nolambda.linkrouter.android.extra.fragment.scenario.FragmentHost
-import nolambda.linkrouter.android.extra.fragment.scenario.Scenario
-import nolambda.linkrouter.android.extra.fragment.scenario.ScenarioHost
-import nolambda.linkrouter.android.extra.fragment.scenario.processor.ComposedResultProcessor
-import nolambda.linkrouter.android.extra.fragment.scenario.processor.OnResult
-import nolambda.linkrouter.android.extra.fragment.scenario.processor.RetainedComposedResultProcessor
-import nolambda.linkrouter.android.extra.fragment.scenario.processor.RetainedScenarioResultProcessor
-import nolambda.linkrouter.android.extra.fragment.scenario.processor.ScenarioResultProcessor
+import nolambda.linkrouter.android.extra.caller.RouteResultLauncher
+import nolambda.linkrouter.android.extra.caller.registerRouteForResult
+import nolambda.linkrouter.android.extra.caller.scenario.ActivityHost
+import nolambda.linkrouter.android.extra.caller.scenario.FragmentHost
+import nolambda.linkrouter.android.extra.caller.scenario.Scenario
+import nolambda.linkrouter.android.extra.caller.scenario.ScenarioHost
+import nolambda.linkrouter.android.extra.caller.scenario.processor.ComposedResultProcessor
+import nolambda.linkrouter.android.extra.caller.scenario.processor.OnResult
+import nolambda.linkrouter.android.extra.caller.scenario.processor.RetainedComposedResultProcessor
+import nolambda.linkrouter.android.extra.caller.scenario.processor.RetainedScenarioResultProcessor
+import nolambda.linkrouter.android.extra.caller.scenario.processor.ScenarioResultProcessor
 import nolambda.linkrouter.approuter.AppRouter
 
 object ResultPickerRoute : Route()

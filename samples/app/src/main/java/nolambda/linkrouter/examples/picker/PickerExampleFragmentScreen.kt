@@ -6,8 +6,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.activity_picker_example.*
-import nolambda.linkrouter.android.extra.fragment.registerRouteForResult
-import nolambda.linkrouter.android.extra.fragment.scenario.registerScenarioForResult
+import nolambda.linkrouter.android.extra.caller.registerRouteForResult
+import nolambda.linkrouter.android.extra.caller.scenario.registerScenarioForResult
 import nolambda.linkrouter.approuter.AppRouter
 import nolambda.linkrouter.approuter.register
 import nolambda.linkrouter.examples.R

@@ -1,12 +1,11 @@
 package nolambda.linkrouter.android.autoregister
 
 import android.content.Context
-import android.util.Log
 import nolambda.linkrouter.android.BaseRoute
-import nolambda.linkrouter.android.middlewares.Middleware
 import nolambda.linkrouter.android.RouteParam
 import nolambda.linkrouter.android.RouterPlugin
 import nolambda.linkrouter.android.middlewares.MiddleWareResult
+import nolambda.linkrouter.android.middlewares.Middleware
 
 typealias NameResolver = (String) -> String
 
@@ -25,10 +24,15 @@ class RouteAutoRegisterMiddleware(
         val name = "${route.javaClass.simpleName}RouteInit"
         val fullClassName = nameResolver(name)
         try {
+            val appContext = plugin.appContext
             val routeInit = Class.forName(fullClassName)
-            routeInit.getDeclaredConstructor(Context::class.java).newInstance(plugin.appContext)
+            val instance = routeInit.getDeclaredConstructor(Context::class.java).newInstance(appContext)
+
+            instance as RouteInit
+            instance.onInit(appContext)
+
         } catch (e: ClassNotFoundException) {
-            Log.e(TAG, "No initialization found for $fullClassName")
+            plugin.logger?.invoke("No initialization found for $fullClassName")
         }
         return MiddleWareResult(route, routeParam)
     }

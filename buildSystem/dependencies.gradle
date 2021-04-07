@@ -1,7 +1,14 @@
 ext {
     final appCompatVersion = '1.2.0'
+    final kotestVersion = "4.2.6"
 
     deps = [
             appCompat: "androidx.appcompat:appcompat:$appCompatVersion"
+    ]
+
+    testDeps = [
+            "io.mockk:mockk:1.10.0",
+            "io.kotest:kotest-runner-junit5:$kotestVersion",
+            "io.kotest:kotest-assertions-core:$kotestVersion"
     ]
 }
