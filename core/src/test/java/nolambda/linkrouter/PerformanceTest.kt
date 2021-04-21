@@ -1,7 +1,7 @@
 package nolambda.linkrouter
 
 import io.kotest.core.spec.style.StringSpec
-import java.util.*
+import java.util.Random
 import kotlin.system.measureTimeMillis
 
 class PerformanceTest : StringSpec({
@@ -25,7 +25,7 @@ class PerformanceTest : StringSpec({
 
     val entries = mutableListOf<String>()
     val time = measureTimeMillis {
-        (0..1000).forEach { _ ->
+        (0..10_000).forEach { _ ->
             entries.add(generateEntry())
         }
     }
