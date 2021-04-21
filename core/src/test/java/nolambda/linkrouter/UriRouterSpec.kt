@@ -2,6 +2,9 @@ package nolambda.linkrouter
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import nolambda.linkrouter.DeepLinkUri.Companion.toDeepLinkUri
+import nolambda.linkrouter.matcher.DeepLinkEntryMatcher
+import nolambda.linkrouter.matcher.UriMatcher
 
 class UriRouterSpec : StringSpec({
 
@@ -46,5 +49,19 @@ class UriRouterSpec : StringSpec({
         val result = router.resolve("http://something.com/aaaa/true")
 
         result shouldBe "true"
+    }
+
+    "it should match custom matcher" {
+        val expectedResult = "123"
+        val router = createTestRouter()
+        router.addEntry("https://test.com?show=true", matcher = object : UriMatcher {
+            override fun match(entry: DeepLinkEntry, url: String): Boolean {
+                return DeepLinkEntryMatcher.match(entry, url) && url.toDeepLinkUri().queryParameter("show") == "true"
+            }
+        }) { _, _ -> expectedResult }
+
+
+        router.resolve("https://test.com?show=false") shouldBe null
+        router.resolve("https://test.com?show=true") shouldBe expectedResult
     }
 })

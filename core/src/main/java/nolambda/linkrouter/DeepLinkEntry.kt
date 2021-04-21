@@ -5,6 +5,7 @@ import nolambda.linkrouter.DeepLinkUri.Companion.toDeepLinkUriOrNull
 import java.util.regex.Pattern
 
 class DeepLinkEntry private constructor(
+    val uri: DeepLinkUri,
     private val regex: Pattern,
     private val parameters: Set<String>
 ) {
@@ -20,7 +21,7 @@ class DeepLinkEntry private constructor(
             val parsedUri = url.toDeepLinkUri()
             val schemeHostAndPath = schemeHostAndPath(parsedUri)
             val regex = Pattern.compile(schemeHostAndPath.replace(PARAM_REGEX.toRegex(), PARAM_VALUE) + "$")
-            return DeepLinkEntry(regex, parseParameters(parsedUri))
+            return DeepLinkEntry(parsedUri, regex, parseParameters(parsedUri))
         }
 
         private fun schemeHostAndPath(uri: DeepLinkUri): String {

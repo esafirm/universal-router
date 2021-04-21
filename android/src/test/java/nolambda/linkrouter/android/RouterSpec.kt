@@ -3,11 +3,15 @@ package nolambda.linkrouter.android
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import nolambda.linkrouter.DeepLinkEntry
 import nolambda.linkrouter.DeepLinkUri
+import nolambda.linkrouter.DeepLinkUri.Companion.toDeepLinkUri
 import nolambda.linkrouter.android.AndroidRoutes.HomeRoute
 import nolambda.linkrouter.android.AndroidRoutes.ProductDetailRoute
 import nolambda.linkrouter.android.AndroidRoutes.UserRoute
 import nolambda.linkrouter.error.RouteNotFoundException
+import nolambda.linkrouter.matcher.DeepLinkEntryMatcher
+import nolambda.linkrouter.matcher.UriMatcher
 
 object AndroidRoutes {
     object HomeRoute : Route()
@@ -24,6 +28,13 @@ object AndroidRoutes {
     }
 
     object PathNoMap : RouteWithParam<String>("app://appkeren")
+    object CustomMatcherRoute : Route("app://test?show=true") {
+        override fun pathMatcher(): UriMatcher = object : UriMatcher {
+            override fun match(entry: DeepLinkEntry, url: String): Boolean {
+                return DeepLinkEntryMatcher.match(entry, url) && url.toDeepLinkUri().queryParameter("show") == "true"
+            }
+        }
+    }
 }
 
 
@@ -200,6 +211,17 @@ class RouterSpec : StringSpec({
         result?.route shouldBe UserRoute
 
         val emptyResult = testRouter.resolveUri("app://appkeren")
+        emptyResult shouldBe null
+    }
+
+    "it should honor custom matcher" {
+        testRouter.cleanRouter()
+        testRouter.register(AndroidRoutes.CustomMatcherRoute) {}
+
+        val result = testRouter.resolveUri("app://test?show=true")
+        result?.route shouldBe AndroidRoutes.CustomMatcherRoute
+
+        val emptyResult = testRouter.resolveUri("app://test")
         emptyResult shouldBe null
     }
 })

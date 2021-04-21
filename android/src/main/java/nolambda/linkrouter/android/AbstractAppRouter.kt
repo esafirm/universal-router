@@ -69,7 +69,7 @@ abstract class AbstractAppRouter<Extra>(
 
         paths.forEach { path ->
             if (path.isBlank()) return@forEach
-            uriRouter.addEntry(path) { uri, param ->
+            uriRouter.addEntry(path, matcher = route.pathMatcher()) { uri, param ->
                 UriResult(uri, route as BaseRoute<Any>, param)
             }
         }
