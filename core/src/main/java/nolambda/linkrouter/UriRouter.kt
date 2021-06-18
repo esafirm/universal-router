@@ -3,6 +3,7 @@ package nolambda.linkrouter
 import nolambda.linkrouter.DeepLinkUri.Companion.toDeepLinkUri
 import nolambda.linkrouter.matcher.DeepLinkEntryMatcher
 import nolambda.linkrouter.matcher.UriMatcher
+import kotlin.system.measureTimeMillis
 
 typealias UriRouterHandler<T> = (DeepLinkUri, Map<String, String>) -> T
 

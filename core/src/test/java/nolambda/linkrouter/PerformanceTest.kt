@@ -6,7 +6,8 @@ import kotlin.system.measureTimeMillis
 
 class PerformanceTest : StringSpec({
 
-    val random = Random(10_000)
+    val size = 1000L
+    val random = Random(size)
 
     val simpleRouter = object : UriRouter<Unit>() {}
 
@@ -14,26 +15,45 @@ class PerformanceTest : StringSpec({
         val domain = random.nextInt().toString()
         val simpleHttp = "http://${domain}.js/{kupon}/{customer_id}"
         val simpleHttps = "https://${domain}.js/{kupon}/{customer_id}"
+        Pair(simpleHttp, simpleHttps)
+    }
 
-        simpleRouter.addEntry(simpleHttp, simpleHttps) { _, param ->
+    val addEntry = { entry: Pair<String, String> ->
+        simpleRouter.addEntry(entry.first, entry.second) { _, param ->
             print("Kupon ${param["kupon"]}")
         }
-
-        simpleHttp
     }
 
-
-    val entries = mutableListOf<String>()
-    val time = measureTimeMillis {
-        (0..10_000).forEach { _ ->
-            entries.add(generateEntry())
+    "warm up" {
+        val time = measureTimeMillis {
+            addEntry(generateEntry())
         }
+        println("warm up took $time ms")
     }
-    println("It takes $time ms to add")
 
-    val resolveTime = measureTimeMillis {
-        simpleRouter.resolve(entries.random())
+    "add entries using map" {
+        val entries = (0..size).map { generateEntry() }
+        val time = measureTimeMillis {
+            entries.forEach(addEntry)
+        }
+        println("sync takes $time ms to add $size entries")
     }
-    println("It takes $resolveTime ms to resolve")
+
+    "add entries using parallel stream" {
+        val entries = (0..size).map { generateEntry() }
+        val time = measureTimeMillis {
+            entries.parallelStream().forEach(addEntry)
+        }
+        println("parallel takes $time ms to add $size entries")
+    }
+
+    "resolve time" {
+        val entries = (0..size).map { generateEntry() }
+        val resolveTime = measureTimeMillis {
+            simpleRouter.resolve(entries.random().first)
+        }
+        println("resolve takes $resolveTime ms to resolve ${size * 2} entries")
+    }
+
 })
 

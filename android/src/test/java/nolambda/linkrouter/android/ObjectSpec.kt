@@ -7,4 +7,4 @@ class ObjectSpec : StringSpec({
     println("Instance 2: ${A::class.objectInstance}")
 })
 
-object A
+private object A
