@@ -52,5 +52,13 @@ class MainActivity : AppCompatActivity() {
                 router.goTo("sample://fragment/third")
             }, 5000)
         }
+
+        /* --------------------------------------------------- */
+        /* > Performance */
+        /* --------------------------------------------------- */
+
+        btnNavPerformanceTest.setOnClickListener {
+            startActivity(Intent(applicationContext, PerformanceTestActivity::class.java))
+        }
     }
 }

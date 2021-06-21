@@ -3,6 +3,15 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    signingConfigs {
+        release {
+            keyAlias 'test'
+            keyPassword 'test123'
+            storePassword 'test123'
+            storeFile file('universalrouter.jks')
+        }
+    }
+
     compileSdkVersion 29
     defaultConfig {
         applicationId "nolambda.linkrouter.samples"
@@ -10,12 +19,14 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     kotlinOptions {
@@ -28,5 +39,15 @@ dependencies {
     implementation project(':samples:cart')
     implementation project(':samples:product')
 
-    implementation('androidx.appcompat:appcompat:1.3.0-beta01')
+    implementation('androidx.appcompat:appcompat:1.3.0')
+
+    /* UI Test */
+    final espressoVersion = '3.3.0'
+    final runnerVersion = '1.3.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoVersion"
+    androidTestImplementation "androidx.test:runner:$runnerVersion"
+    androidTestImplementation "androidx.test:rules:$runnerVersion"
+    androidTestImplementation 'io.github.kakaocup:kakao:3.0.2'
 }

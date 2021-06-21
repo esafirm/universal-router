@@ -4,12 +4,14 @@ package nolambda.linkrouter.android
 
 import nolambda.linkrouter.SimpleRouter
 import nolambda.linkrouter.UriRouter
-import nolambda.linkrouter.addEntry
 import nolambda.linkrouter.android.middlewares.MiddleWareResult
 import nolambda.linkrouter.android.middlewares.Middleware
+import nolambda.linkrouter.android.registerstrategy.EagerRegisterStrategy
+import nolambda.linkrouter.android.registerstrategy.RegisterStrategy
 
 abstract class AbstractAppRouter<Extra>(
-    vararg middleWares: Middleware<Extra> = emptyArray()
+    vararg middleWares: Middleware<Extra> = emptyArray(),
+    private val registerStrategy: RegisterStrategy<Extra> = EagerRegisterStrategy()
 ) : AppRouter<Extra> {
 
     private class AndroidSimpleRouter : SimpleRouter<RouteHandler<*, *, *>>()
@@ -56,26 +58,13 @@ abstract class AbstractAppRouter<Extra>(
     /* --------------------------------------------------- */
 
     override fun <P : Any, R> register(route: BaseRoute<P>, handler: RouteHandler<P, R, Extra>) {
-        val paths = route.routePaths
-
-        // Handle non path
-        simpleRouter.addEntry(route) {
-            @Suppress("UNCHECKED_CAST")
-            handler as RouteHandler<*, *, *>
-        }
-
-        // Handle the path
-        if (paths.isEmpty()) return
-
-        paths.forEach { path ->
-            if (path.isBlank()) return@forEach
-            uriRouter.addEntry(path, matcher = route.pathMatcher()) { uri, param ->
-                UriResult(uri, route as BaseRoute<Any>, param)
-            }
-        }
+        registerStrategy.register(simpleRouter, uriRouter, route, handler)
     }
 
-    override fun resolveUri(uri: String) = uriRouter.resolve(uri)
+    override fun resolveUri(uri: String): UriResult? {
+        registerStrategy.await()
+        return uriRouter.resolve(uri)
+    }
 
     override fun canHandle(uri: String): Boolean {
         return resolveUri(uri) != null
@@ -118,7 +107,11 @@ abstract class AbstractAppRouter<Extra>(
 
     private fun Throwable.handleError() = RouterPlugin.errorHandler(this)
 
-    private fun <P : Any> processRoute(route: BaseRoute<P>, param: P?, actionInfo: ActionInfo): Any? {
+    private fun <P : Any> processRoute(
+        route: BaseRoute<P>,
+        param: P?,
+        actionInfo: ActionInfo
+    ): Any? {
         val routeParam = RouteParam<P, Extra>(
             info = actionInfo,
             param = param

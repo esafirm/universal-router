@@ -7,14 +7,17 @@ import nolambda.linkrouter.android.RouteHandler
 import nolambda.linkrouter.android.RouteParam
 import nolambda.linkrouter.android.RouteWithParam
 import nolambda.linkrouter.android.middlewares.Middleware
+import nolambda.linkrouter.android.registerstrategy.EagerRegisterStrategy
+import nolambda.linkrouter.android.registerstrategy.RegisterStrategy
 
 /**
  * This router is intended for measuring actions that router execute
  */
 abstract class MeasuredAbstractAppRouter<Extra>(
     private val config: MeasureConfig,
-    vararg middleWares: Middleware<Extra> = emptyArray()
-) : AbstractAppRouter<Extra>(*middleWares) {
+    vararg middleWares: Middleware<Extra> = emptyArray(),
+    registerStrategy: RegisterStrategy<Extra> = EagerRegisterStrategy()
+) : AbstractAppRouter<Extra>(*middleWares, registerStrategy = registerStrategy) {
 
     override fun createMiddleWares() = measureAndLog("registerAllMiddleWares") {
         super.createMiddleWares()

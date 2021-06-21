@@ -3,6 +3,8 @@ package nolambda.linkrouter
 import nolambda.linkrouter.DeepLinkUri.Companion.toDeepLinkUri
 import nolambda.linkrouter.matcher.DeepLinkEntryMatcher
 import nolambda.linkrouter.matcher.UriMatcher
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 
 typealias UriRouterHandler<T> = (DeepLinkUri, Map<String, String>) -> T
 
@@ -15,7 +17,7 @@ abstract class UriRouter<RES>(
     private val logger: ((String) -> Unit)? = null
 ) : Router<String, RES?> {
 
-    internal var entries = linkedMapOf<DeepLinkEntry, EntryValue<RES>>()
+    internal var entries = ConcurrentHashMap<DeepLinkEntry, EntryValue<RES>>()
 
     override fun clear() {
         entries.clear()
@@ -23,6 +25,7 @@ abstract class UriRouter<RES>(
 
     override fun resolve(route: String): RES? {
         val filteredMap = entries.filter { it.value.matcher.match(it.key, route) }
+        println("Entries size: ${entries.size}")
         if (filteredMap.isEmpty()) {
             logger?.invoke("Path not implemented $route")
             return null

@@ -40,4 +40,18 @@
         android:layout_height="wrap_content"
         android:text="Go to Picker Fragment" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Performance Test"
+        android:textColor="#000"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnNavPerformanceTest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Go to Performance Test" />
+
 </LinearLayout>

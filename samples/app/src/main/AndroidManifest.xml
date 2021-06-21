@@ -19,6 +19,7 @@
         </activity>
 
         <activity android:name=".notsimple.NotSimpleActivity" />
+        <activity android:name=".PerformanceTestActivity" />
 
 
         <!-- ============================================= -->
