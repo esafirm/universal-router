@@ -5,6 +5,8 @@ dependencies {
     implementation project(':core')
     implementation deps.appCompat
 
+    api deps.coroutine
+
     testImplementation testDeps
     testImplementation project(':android-test')
 }

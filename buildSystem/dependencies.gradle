@@ -1,9 +1,11 @@
 ext {
     final appCompatVersion = '1.2.0'
     final kotestVersion = "4.2.6"
+    final coroutineVersion = '1.4.2'
 
     deps = [
-            appCompat: "androidx.appcompat:appcompat:$appCompatVersion"
+            appCompat: "androidx.appcompat:appcompat:$appCompatVersion",
+            coroutine: "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
     ]
 
     testDeps = [

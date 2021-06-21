@@ -2,18 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_lazy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lazy" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_no_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No URL" />
 
     <Button
         android:id="@+id/btn_test"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Test" />
-
-    <Button
-        android:id="@+id/btn_test_no_url"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Test - No URL" />
 
 </LinearLayout>
