@@ -12,7 +12,7 @@ class KeyUriRouterFactory : UriRouterFactory {
     }
 }
 
-class DefaultRouterFactory : UriRouterFactory {
+class SimpleUriRouterFactory : UriRouterFactory {
     override fun create(): UriRouter<UriResult> {
         return SimpleUriRouter()
     }

@@ -11,7 +11,7 @@ import nolambda.linkrouter.android.registerstrategy.RegisterStrategy
 abstract class AbstractAppRouter<Extra>(
     vararg middleWares: Middleware<Extra> = emptyArray(),
     private val registerStrategy: RegisterStrategy<Extra> = EagerRegisterStrategy(),
-    private val uriRouterFactory: UriRouterFactory = KeyUriRouterFactory()
+    private val uriRouterFactory: UriRouterFactory = SimpleUriRouterFactory()
 ) : AppRouter<Extra> {
 
     private class AndroidSimpleRouter : SimpleRouter<RouteHandler<*, *, *>>()
