@@ -8,7 +8,7 @@ import nolambda.linkrouter.matcher.UriMatcher
 
 class UriRouterSpec : StringSpec({
 
-    val createTestRouter = { object : UriRouter<String>() {} }
+    val createTestRouter = { SimpleUriRouter<String>() }
 
     "it should match and resolve to respected path" {
 
@@ -56,7 +56,8 @@ class UriRouterSpec : StringSpec({
         val router = createTestRouter()
         router.addEntry("https://test.com?show=true", matcher = object : UriMatcher {
             override fun match(entry: DeepLinkEntry, url: String): Boolean {
-                return DeepLinkEntryMatcher.match(entry, url) && url.toDeepLinkUri().queryParameter("show") == "true"
+                return DeepLinkEntryMatcher.match(entry, url) && url.toDeepLinkUri()
+                    .queryParameter("show") == "true"
             }
         }) { _, _ -> expectedResult }
 

@@ -11,8 +11,10 @@ class PerformanceTest : StringSpec({
 
     val logger = { log: String -> println(log) }
 
-    val simpleRouter = object : UriRouter<Unit>(logger) {}
-    val parallelRouter = object : UriRouter<Unit>(logger, parallelResolve = true) {}
+    val simpleRouter = SimpleUriRouter<Unit>(logger)
+    val keyRouter = KeyUriRouter<Unit>(logger) { entry ->
+        "${entry.uri.scheme}${entry.uri.host}"
+    }
 
     val generateEntry = {
         val domain = random.nextInt().toString()
@@ -33,7 +35,7 @@ class PerformanceTest : StringSpec({
     "warm up" {
         val time = measureTimeMillis {
             addEntry(simpleRouter, generateEntry())
-            addEntry(parallelRouter, generateEntry())
+            addEntry(keyRouter, generateEntry())
         }
         println("warm up took $time ms")
     }
@@ -52,18 +54,18 @@ class PerformanceTest : StringSpec({
         println("sync resolve takes $resolveTime ms to resolve")
     }
 
-    "add entries using parallel stream" {
+    "add entries using container" {
         val time = measureTimeMillis {
-            entries.parallelStream().forEach { addEntry(parallelRouter, it) }
+            entries.forEach { addEntry(keyRouter, it) }
         }
-        println("parallel takes $time ms to add")
+        println("container takes $time ms to add")
     }
 
-    "resolve time parallel" {
+    "resolve time container" {
         val resolveTime = measureTimeMillis {
-            parallelRouter.resolve(testEntry.first)
+            keyRouter.resolve(testEntry.first)
         }
-        println("parallel resolve takes $resolveTime ms to resolve")
+        println("container resolve takes $resolveTime ms to resolve")
     }
 })
 

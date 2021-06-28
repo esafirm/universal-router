@@ -2,7 +2,6 @@ package nolambda.linkrouter.android.registerstrategy
 
 import nolambda.linkrouter.SimpleRouter
 import nolambda.linkrouter.UriRouter
-import nolambda.linkrouter.addEntry
 import nolambda.linkrouter.android.BaseRoute
 import nolambda.linkrouter.android.RouteHandler
 import nolambda.linkrouter.android.UriResult
