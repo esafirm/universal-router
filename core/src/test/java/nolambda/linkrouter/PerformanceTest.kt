@@ -20,11 +20,12 @@ class PerformanceTest : StringSpec({
         val domain = random.nextInt().toString()
         val simpleHttp = "http://${domain}.js/{kupon}/{customer_id}"
         val simpleHttps = "https://${domain}.js/{kupon}/{customer_id}"
-        Pair(simpleHttp, simpleHttps)
+        val constantDomain = "http://test.com/${domain}"
+        arrayOf(simpleHttp, simpleHttps, constantDomain)
     }
 
-    val addEntry = { router: UriRouter<Unit>, entry: Pair<String, String> ->
-        router.addEntry(entry.first, entry.second) { _, _ ->
+    val addEntry = { router: UriRouter<Unit>, entries: Array<String> ->
+        router.addEntry(*entries) { _, _ ->
             print("Resolved!")
         }
     }
@@ -49,7 +50,7 @@ class PerformanceTest : StringSpec({
 
     "resolve time" {
         val resolveTime = measureTimeMillis {
-            simpleRouter.resolve(testEntry.first)
+            simpleRouter.resolve(testEntry.first())
         }
         println("sync resolve takes $resolveTime ms to resolve")
     }
@@ -63,7 +64,7 @@ class PerformanceTest : StringSpec({
 
     "resolve time container" {
         val resolveTime = measureTimeMillis {
-            keyRouter.resolve(testEntry.first)
+            keyRouter.resolve(testEntry.first())
         }
         println("container resolve takes $resolveTime ms to resolve")
     }

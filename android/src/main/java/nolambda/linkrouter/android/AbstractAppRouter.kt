@@ -2,7 +2,6 @@
 
 package nolambda.linkrouter.android
 
-import nolambda.linkrouter.KeyUriRouter
 import nolambda.linkrouter.SimpleRouter
 import nolambda.linkrouter.android.middlewares.MiddleWareResult
 import nolambda.linkrouter.android.middlewares.Middleware
@@ -11,17 +10,14 @@ import nolambda.linkrouter.android.registerstrategy.RegisterStrategy
 
 abstract class AbstractAppRouter<Extra>(
     vararg middleWares: Middleware<Extra> = emptyArray(),
-    private val registerStrategy: RegisterStrategy<Extra> = EagerRegisterStrategy()
+    private val registerStrategy: RegisterStrategy<Extra> = EagerRegisterStrategy(),
+    private val uriRouterFactory: UriRouterFactory = KeyUriRouterFactory()
 ) : AppRouter<Extra> {
 
     private class AndroidSimpleRouter : SimpleRouter<RouteHandler<*, *, *>>()
 
     private val simpleRouter by lazy { AndroidSimpleRouter() }
-    private val uriRouter by lazy {
-        KeyUriRouter<UriResult>(RouterPlugin.logger) { entry ->
-            "${entry.uri.scheme}${entry.uri.host}"
-        }
-    }
+    private val uriRouter by lazy { uriRouterFactory.create() }
 
     private val middlewares by lazy { createMiddleWares() }
     private val processors = linkedSetOf<Pair<Class<*>, RouteProcessor<in Any>>>()

@@ -1,5 +1,6 @@
 package nolambda.linkrouter
 
+import nolambda.linkrouter.matcher.DeepLinkEntryMatcher
 import nolambda.linkrouter.matcher.UriMatcher
 import java.util.concurrent.ConcurrentHashMap
 
@@ -19,14 +20,23 @@ class KeyUriRouter<URI>(
         val entry = DeepLinkEntry.parse(route)
         val key = keyExtractor(entry)
         val list = entryContainer[key]
-        val actualKey = list?.firstOrNull { it.matches(route) }
-        if (actualKey != null) {
-            return actualKey to entries[actualKey]!!
+        val actualKey = list?.firstOrNull { it.matches(route) } ?: return null
+
+        val entryValue = entries[actualKey]!!
+        if (entryValue.matcher == DeepLinkEntryMatcher) {
+            return actualKey to entryValue
         }
-        return null
+        // to support custom matcher
+        return if (entryValue.matcher.match(actualKey, route)) {
+            return actualKey to entryValue
+        } else null
     }
 
-    override fun addEntry(vararg uri: String, matcher: UriMatcher, handler: UriRouterHandler<URI>) {
+    override fun addEntry(
+        vararg uri: String,
+        matcher: UriMatcher,
+        handler: UriRouterHandler<URI>
+    ) {
         val deepLinkEntries = uri.map { DeepLinkEntry.parse(it) }
         deepLinkEntries.forEach { entry ->
             entries[entry] = EntryValue(handler, matcher)

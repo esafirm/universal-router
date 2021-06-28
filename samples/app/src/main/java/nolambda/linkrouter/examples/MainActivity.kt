@@ -22,7 +22,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(applicationContext, NotSimpleActivity::class.java))
         }
 
-
         /* --------------------------------------------------- */
         /* > Picker */
         /* --------------------------------------------------- */
