@@ -3,13 +3,14 @@ package nolambda.linkrouter
 import nolambda.linkrouter.matcher.DeepLinkEntryMatcher
 import nolambda.linkrouter.matcher.UriMatcher
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArraySet
 
 class KeyUriRouter<URI>(
     logger: UriRouterLogger? = null,
     private val keyExtractor: (DeepLinkEntry) -> String
 ) : UriRouter<URI>(logger) {
 
-    private val entryContainer = ConcurrentHashMap<String, MutableList<DeepLinkEntry>>()
+    private val entryContainer = ConcurrentHashMap<String, MutableSet<DeepLinkEntry>>()
 
     override fun clear() {
         super.clear()
@@ -20,6 +21,7 @@ class KeyUriRouter<URI>(
         val entry = DeepLinkEntry.parse(route)
         val key = keyExtractor(entry)
         val list = entryContainer[key]
+
         val actualKey = list?.firstOrNull { it.matches(route) } ?: return null
 
         val entryValue = entries[actualKey]!!
@@ -42,9 +44,12 @@ class KeyUriRouter<URI>(
             entries[entry] = EntryValue(handler, matcher)
 
             val key = keyExtractor(entry)
-            val entriesHolder = entryContainer.getOrPut(key) { mutableListOf() }
-            entriesHolder as MutableList<DeepLinkEntry>
-            entriesHolder.add(entry)
+            inputToEntryContainer(key, entry)
         }
+    }
+
+    private fun inputToEntryContainer(key: String, entry: DeepLinkEntry) {
+        val entriesHolder = entryContainer.getOrPut(key) { CopyOnWriteArraySet() }
+        entriesHolder.add(entry)
     }
 }

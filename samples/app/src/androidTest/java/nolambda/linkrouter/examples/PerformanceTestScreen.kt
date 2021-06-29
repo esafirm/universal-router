@@ -8,4 +8,5 @@ class PerformanceTestScreen : Screen<PerformanceTestScreen>() {
     val btnTest = KButton { withId(R.id.btn_test) }
     val switchIsLazy = KSwitch { withId(R.id.switch_lazy) }
     val switchIsNoUrl = KSwitch { withId(R.id.switch_no_url) }
+    val switchKeyUri = KSwitch { withId(R.id.switch_key_uri) }
 }
