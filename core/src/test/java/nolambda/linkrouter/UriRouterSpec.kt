@@ -16,7 +16,7 @@ class UriRouterSpec : StringSpec({
         val pathMap = mapOf(
             "http://test.com/promo" to "1",
             "http://test.com/promo-list" to "2",
-            "http://test.com/promo-list/promo" to "3",
+            "http://test.com/promo-list/promo/" to "3",
             "http://test.com/promo-list/{a}" to "4",
         )
 
@@ -36,11 +36,6 @@ class UriRouterSpec : StringSpec({
 
             resolved shouldBe pathMap[key]
         }
-
-        // The order is important
-        // if we register this after the path above the path will resolved to the previous path
-        router.addEntry("http://test.com/promo-list/cap") { _, _ -> "5" }
-        router.resolve("http://test.com/promo-list/cap") shouldBe "4"
     }
 
     "it should match normal regex" {
