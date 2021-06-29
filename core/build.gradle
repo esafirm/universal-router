@@ -46,6 +46,7 @@ dependencies {
 
     implementation 'com.squareup.okio:okio:2.7.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation deps.coroutine
 
     final kotestVersion = "4.2.6"
     testImplementation "io.kotest:kotest-runner-junit5:$kotestVersion"

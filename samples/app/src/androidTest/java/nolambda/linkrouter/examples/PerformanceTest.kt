@@ -44,4 +44,21 @@ class PerformanceTest {
             btnTest.click()
         }
     }
+
+    @Test
+    fun keyUriRouter() {
+        Screen.onScreen<PerformanceTestScreen> {
+            switchKeyUri.click()
+            btnTest.click()
+        }
+    }
+
+    @Test
+    fun lazyKeyUriRouter() {
+        Screen.onScreen<PerformanceTestScreen> {
+            switchIsLazy.click()
+            switchKeyUri.click()
+            btnTest.click()
+        }
+    }
 }

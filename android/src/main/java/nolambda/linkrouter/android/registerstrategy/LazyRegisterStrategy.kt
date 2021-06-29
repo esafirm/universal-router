@@ -2,17 +2,18 @@ package nolambda.linkrouter.android.registerstrategy
 
 import nolambda.linkrouter.SimpleRouter
 import nolambda.linkrouter.UriRouter
-import nolambda.linkrouter.addEntry
 import nolambda.linkrouter.android.BaseRoute
 import nolambda.linkrouter.android.RouteHandler
 import nolambda.linkrouter.android.UriResult
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
-class LazyRegisterStrategy<Extra> : RegisterStrategy<Extra> {
+class LazyRegisterStrategy<Extra>(
+    private val executor: ExecutorService = Executors.newFixedThreadPool(2)
+) : RegisterStrategy<Extra> {
 
     private val futures = mutableSetOf<Future<*>>()
-    private val executor = Executors.newFixedThreadPool(2)
 
     override fun <P : Any, R> register(
         simpleRouter: SimpleRouter<RouteHandler<*, *, *>>,

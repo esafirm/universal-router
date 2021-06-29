@@ -8,7 +8,7 @@ import nolambda.linkrouter.matcher.UriMatcher
 
 class UriRouterSpec : StringSpec({
 
-    val createTestRouter = { object : UriRouter<String>() {} }
+    val createTestRouter = { SimpleUriRouter<String>() }
 
     "it should match and resolve to respected path" {
 
@@ -16,7 +16,7 @@ class UriRouterSpec : StringSpec({
         val pathMap = mapOf(
             "http://test.com/promo" to "1",
             "http://test.com/promo-list" to "2",
-            "http://test.com/promo-list/promo" to "3",
+            "http://test.com/promo-list/promo/" to "3",
             "http://test.com/promo-list/{a}" to "4",
         )
 
@@ -36,11 +36,6 @@ class UriRouterSpec : StringSpec({
 
             resolved shouldBe pathMap[key]
         }
-
-        // The order is important
-        // if we register this after the path above the path will resolved to the previous path
-        router.addEntry("http://test.com/promo-list/cap") { _, _ -> "5" }
-        router.resolve("http://test.com/promo-list/cap") shouldBe "4"
     }
 
     "it should match normal regex" {
@@ -56,7 +51,8 @@ class UriRouterSpec : StringSpec({
         val router = createTestRouter()
         router.addEntry("https://test.com?show=true", matcher = object : UriMatcher {
             override fun match(entry: DeepLinkEntry, url: String): Boolean {
-                return DeepLinkEntryMatcher.match(entry, url) && url.toDeepLinkUri().queryParameter("show") == "true"
+                return DeepLinkEntryMatcher.match(entry, url) && url.toDeepLinkUri()
+                    .queryParameter("show") == "true"
             }
         }) { _, _ -> expectedResult }
 

@@ -17,11 +17,23 @@
         android:layout_height="wrap_content"
         android:text="No URL" />
 
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_key_uri"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Key Uri Router" />
+
     <Button
         android:id="@+id/btn_test"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Test" />
+
+    <TextView
+        android:id="@+id/txt_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>
