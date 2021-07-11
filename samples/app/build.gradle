@@ -12,11 +12,11 @@ android {
         }
     }
 
-    compileSdkVersion 29
+    compileSdkVersion versions.compileSdk
     defaultConfig {
         applicationId "nolambda.linkrouter.samples"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion versions.compileSdk
         versionCode 1
         versionName "1.0"
 
