@@ -72,7 +72,8 @@ abstract class AbstractAppRouter<Extra>(
             val routeParam = if (route is RouteWithParam<*>) {
                 route.mapUri(deepLinkUri, param)
             } else null
-            val routeResult = processRoute(route as BaseRoute<Any>, routeParam, createInfo(uri))
+            val info = route.createInfo(url = uri, param = param)
+            val routeResult = processRoute(route as BaseRoute<Any>, routeParam, info)
             RouteResult(true, routeResult)
         } catch (e: Exception) {
             e.handleError()
@@ -82,7 +83,8 @@ abstract class AbstractAppRouter<Extra>(
 
     override fun <P : Any> push(route: RouteWithParam<P>, param: P): RouteResult {
         return try {
-            val result = processRoute(route, param, createInfo())
+            val info = route.createInfo(param = param)
+            val result = processRoute(route, param, info)
             RouteResult(true, result)
         } catch (e: Exception) {
             e.handleError()
@@ -92,7 +94,8 @@ abstract class AbstractAppRouter<Extra>(
 
     override fun push(route: Route): RouteResult {
         return try {
-            val result = processRoute(route, null, createInfo())
+            val info = route.createInfo()
+            val result = processRoute(route, null, info)
             RouteResult(true, result)
         } catch (e: Exception) {
             e.handleError()
@@ -143,5 +146,19 @@ abstract class AbstractAppRouter<Extra>(
         }
     }
 
-    private fun createInfo(url: String? = null): ActionInfo = ActionInfo(this, url)
+    private fun BaseRoute<*>.createInfo(
+        url: String? = null,
+        param: Any? = null
+    ): ActionInfo {
+        if (this is RouteWithParam<*>) {
+            checkNotNull(param) { "Param must not be empty when route is RouteWithParam" }
+        }
+        return ActionInfo(
+            route = this,
+            param = param,
+            currentRouter = this@AbstractAppRouter,
+            uri = url
+        )
+    }
+
 }

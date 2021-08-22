@@ -21,9 +21,11 @@ class RouterAutoRegisterMiddlewareSpec : StringSpec({
 
     "It should not register if the annotation is false" {
         RouterPlugin.isUseAnnotationProcessor = false
+
+        val route = TestRoute()
         routeAutoRegister.onRouting(
-            TestRoute(),
-            RouteParam(param = null, ActionInfo(testRouter))
+            route,
+            RouteParam(param = null, ActionInfo(route, currentRouter = testRouter))
         )
 
         isResolving shouldBe false
@@ -32,9 +34,11 @@ class RouterAutoRegisterMiddlewareSpec : StringSpec({
     // TODO: This is ignored for now because we can't mock the Context
     "!It should resolve and invoke init" {
         RouterPlugin.isUseAnnotationProcessor = true
+
+        val route = TestRoute()
         routeAutoRegister.onRouting(
-            TestRoute(),
-            RouteParam(param = null, ActionInfo(testRouter))
+            route,
+            RouteParam(param = null, ActionInfo(route, currentRouter = testRouter))
         )
 
         isResolving shouldBe true

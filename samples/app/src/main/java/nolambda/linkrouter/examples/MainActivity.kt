@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.activity_main_simple.*
 import nolambda.linkrouter.examples.notsimple.NotSimpleActivity
 import nolambda.linkrouter.examples.picker.PickerExampleFragmentScreen
 import nolambda.linkrouter.examples.picker.PickerExampleScreen
+import nolambda.linkrouter.examples.stack.StackActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,6 +51,14 @@ class MainActivity : AppCompatActivity() {
             handler.postDelayed({
                 router.goTo("sample://fragment/third")
             }, 5000)
+        }
+
+        /* --------------------------------------------------- */
+        /* > Stack */
+        /* --------------------------------------------------- */
+
+        btnNavigateStack.setOnClickListener {
+            startActivity(Intent(applicationContext, StackActivity::class.java))
         }
 
         /* --------------------------------------------------- */

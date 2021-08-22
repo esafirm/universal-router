@@ -1,34 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="nolambda.linkrouter.examples">
+          package="nolambda.linkrouter.examples">
 
     <application
-        android:name=".SampleApp"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+            android:name=".SampleApp"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
-        <activity android:name=".notsimple.NotSimpleActivity" />
-        <activity android:name=".PerformanceTestActivity" />
+        <activity android:name=".notsimple.NotSimpleActivity"/>
+        <activity android:name=".PerformanceTestActivity"/>
+        <activity android:name=".stack.StackActivity"/>
 
 
         <!-- ============================================= -->
         <!-- Picker Example -->
         <!-- ============================================= -->
 
-        <activity android:name=".picker.PickerExampleScreen" />
-        <activity android:name=".picker.PickerExampleFragmentScreen" />
-        <activity android:name=".picker.ResultPickerScreen" />
+        <activity android:name=".picker.PickerExampleScreen"/>
+        <activity android:name=".picker.PickerExampleFragmentScreen"/>
+        <activity android:name=".picker.ResultPickerScreen"/>
     </application>
 
 </manifest>

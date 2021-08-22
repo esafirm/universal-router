@@ -18,8 +18,4 @@ inline fun <reified T> LifecycleOwner.addRouterProcessor(
             }
         }
     })
-
-    if (lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
-        router.addTypeProcessor(processor)
-    }
 }

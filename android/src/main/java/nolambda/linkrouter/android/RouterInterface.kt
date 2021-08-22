@@ -16,8 +16,12 @@ class RouteParam<Param, Extra>(
 
 /**
  * Contain info regarding the action that trigger the routing
+ * @param route the pushed route
+ * @param param of [route] if the route is [RouteWithParam]
  */
 data class ActionInfo(
+    val route: BaseRoute<*>,
+    val param: Any? = null,
     val currentRouter: AbstractAppRouter<*>,
     val uri: String? = null
 ) {
@@ -54,8 +58,17 @@ interface RouterProcessor<Extra> {
 
 interface AppRouter<Extra> : RouterProcessor<Extra>, RouterComponents
 
+/* --------------------------------------------------- */
+/* > Stack Router */
+/* --------------------------------------------------- */
+
+data class StackRouterItem(
+    val route: BaseRoute<*>,
+    val param: Any?
+)
+
 interface StackRouter {
-    fun replace(route: Route)
-    fun pop()
-    fun popUntil(routeFinder: (Route) -> Boolean)
+    fun replace(item: StackRouterItem)
+    fun pop(): Boolean
+    fun popUntil(routeFinder: (StackRouterItem) -> Boolean): Boolean
 }
