@@ -878,12 +878,12 @@ class DeepLinkUri internal constructor(
                 authority@ while (true) {
                     val componentDelimiterOffset = input.delimiterOffset("@/\\?#", pos, limit)
                     val c = if (componentDelimiterOffset != limit) {
-                        input[componentDelimiterOffset].toInt()
+                        input[componentDelimiterOffset].code
                     } else {
                         -1
                     }
                     when (c) {
-                        '@'.toInt() -> {
+                        '@'.code -> {
                             // User info precedes.
                             if (!hasPassword) {
                                 val passwordColonOffset = input.delimiterOffset(':', pos, componentDelimiterOffset)
@@ -919,7 +919,7 @@ class DeepLinkUri internal constructor(
                             pos = componentDelimiterOffset + 1
                         }
 
-                        -1, '/'.toInt(), '\\'.toInt(), '?'.toInt(), '#'.toInt() -> {
+                        -1, '/'.code, '\\'.code, '?'.code, '#'.code -> {
                             // Host info precedes.
                             val portColonOffset = portColonOffset(input, pos, componentDelimiterOffset)
                             if (portColonOffset + 1 < componentDelimiterOffset) {
@@ -927,8 +927,10 @@ class DeepLinkUri internal constructor(
                                 port = parsePort(input, portColonOffset + 1, componentDelimiterOffset)
                                 require(port != -1) {
                                     "Invalid URL port: \"${
-                                        input.substring(portColonOffset + 1,
-                                            componentDelimiterOffset)
+                                        input.substring(
+                                            portColonOffset + 1,
+                                            componentDelimiterOffset
+                                        )
                                     }\""
                                 }
                             } else {
@@ -1282,7 +1284,7 @@ class DeepLinkUri internal constructor(
             var i = pos
             while (i < limit) {
                 codePoint = encoded.codePointAt(i)
-                if (codePoint == '%'.toInt() && i + 2 < limit) {
+                if (codePoint == '%'.code && i + 2 < limit) {
                     val d1 = encoded[i + 1].parseHexDigit()
                     val d2 = encoded[i + 2].parseHexDigit()
                     if (d1 != -1 && d2 != -1) {
@@ -1291,8 +1293,8 @@ class DeepLinkUri internal constructor(
                         i += Character.charCount(codePoint)
                         continue
                     }
-                } else if (codePoint == '+'.toInt() && plusIsSpace) {
-                    writeByte(' '.toInt())
+                } else if (codePoint == '+'.code && plusIsSpace) {
+                    writeByte(' '.code)
                     i++
                     continue
                 }
@@ -1346,9 +1348,9 @@ class DeepLinkUri internal constructor(
                     codePoint == 0x7f ||
                     codePoint >= 0x80 && !unicodeAllowed ||
                     codePoint.toChar() in encodeSet ||
-                    codePoint == '%'.toInt() &&
+                    codePoint == '%'.code &&
                     (!alreadyEncoded || strict && !isPercentEncoded(i, limit)) ||
-                    codePoint == '+'.toInt() && plusIsSpace) {
+                    codePoint == '+'.code && plusIsSpace) {
                     // Slow path: the character at i requires encoding!
                     val out = Buffer()
                     out.writeUtf8(this, pos, i)
@@ -1388,17 +1390,17 @@ class DeepLinkUri internal constructor(
             var i = pos
             while (i < limit) {
                 codePoint = input.codePointAt(i)
-                if (alreadyEncoded && (codePoint == '\t'.toInt() || codePoint == '\n'.toInt() ||
-                        codePoint == '\u000c'.toInt() || codePoint == '\r'.toInt())) {
+                if (alreadyEncoded && (codePoint == '\t'.code || codePoint == '\n'.code ||
+                            codePoint == '\u000c'.code || codePoint == '\r'.code)) {
                     // Skip this character.
-                } else if (codePoint == '+'.toInt() && plusIsSpace) {
+                } else if (codePoint == '+'.code && plusIsSpace) {
                     // Encode '+' as '%2B' since we permit ' ' to be encoded as either '+' or '%20'.
                     writeUtf8(if (alreadyEncoded) "+" else "%2B")
                 } else if (codePoint < 0x20 ||
                     codePoint == 0x7f ||
                     codePoint >= 0x80 && !unicodeAllowed ||
                     codePoint.toChar() in encodeSet ||
-                    codePoint == '%'.toInt() &&
+                    codePoint == '%'.code &&
                     (!alreadyEncoded || strict && !input.isPercentEncoded(i, limit))) {
                     // Percent encode this character.
                     if (encodedCharBuffer == null) {
@@ -1413,9 +1415,9 @@ class DeepLinkUri internal constructor(
 
                     while (!encodedCharBuffer.exhausted()) {
                         val b = encodedCharBuffer.readByte().toInt() and 0xff
-                        writeByte('%'.toInt())
-                        writeByte(HEX_DIGITS[b shr 4 and 0xf].toInt())
-                        writeByte(HEX_DIGITS[b and 0xf].toInt())
+                        writeByte('%'.code)
+                        writeByte(HEX_DIGITS[b shr 4 and 0xf].code)
+                        writeByte(HEX_DIGITS[b and 0xf].code)
                     }
                 } else {
                     // This character doesn't need encoding. Just copy it over.

@@ -1,7 +1,7 @@
 ext {
     final appCompatVersion = '1.2.0'
     final kotestVersion = "4.2.6"
-    final coroutineVersion = '1.4.2'
+    final coroutineVersion = '1.5.1'
 
     deps = [
             appCompat: "androidx.appcompat:appcompat:$appCompatVersion",
