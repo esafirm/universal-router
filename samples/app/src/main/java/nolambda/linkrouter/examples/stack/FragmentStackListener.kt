@@ -3,8 +3,8 @@ package nolambda.linkrouter.examples.stack
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import nolambda.linkrouter.android.StackRouterItem
-import nolambda.linkrouter.android.StackRouterListener
+import nolambda.linkrouter.android.extra.stack.StackRouterItem
+import nolambda.linkrouter.android.extra.stack.StackRouterListener
 
 class FragmentStackListener(
     @IdRes private val containerId: Int,
@@ -22,12 +22,12 @@ class FragmentStackListener(
 
         fragmentManager.beginTransaction()
             .add(containerId, result)
-            .addToBackStack(item.route.toString())
+            .addToBackStack(item.id)
             .commit()
     }
 
     override fun onPop(item: StackRouterItem) {
-        fragmentManager.popBackStack(item.route.toString(), FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        fragmentManager.popBackStack(item.id, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
 }

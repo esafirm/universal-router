@@ -10,5 +10,6 @@ def addExtras(moduleNames) {
 addExtras([
         'android-caller',
         'android-activityresult',
-        'android-compose'
+        'android-compose',
+        'stack'
 ])

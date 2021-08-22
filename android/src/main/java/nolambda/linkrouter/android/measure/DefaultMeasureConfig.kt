@@ -2,7 +2,6 @@ package nolambda.linkrouter.android.measure
 
 import nolambda.linkrouter.android.RouterPlugin
 import kotlin.system.measureNanoTime
-import kotlin.system.measureTimeMillis
 
 class DefaultMeasureConfig : MeasureConfig {
     override fun shouldMeasure(name: String): Boolean = true

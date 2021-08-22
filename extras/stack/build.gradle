@@ -1,0 +1,9 @@
+apply from: "${buildSystemDir}/base.gradle"
+apply plugin: 'com.github.dcendents.android-maven'
+
+dependencies {
+    implementation project(':android')
+
+    testImplementation testDeps
+    testImplementation project(':android-test')
+}

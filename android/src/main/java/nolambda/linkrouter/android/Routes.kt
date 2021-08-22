@@ -7,7 +7,7 @@ import java.io.Serializable
 
 abstract class BaseRoute<P : Any>(
     vararg val routePaths: String
-) : Serializable {
+) {
     open fun pathMatcher(): UriMatcher = DeepLinkEntryMatcher
 }
 

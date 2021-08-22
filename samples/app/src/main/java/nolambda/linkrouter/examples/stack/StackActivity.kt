@@ -1,16 +1,10 @@
 package nolambda.linkrouter.examples.stack
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.activity_stack.*
-import nolambda.linkrouter.android.StackAppRouter
-import nolambda.linkrouter.android.StackRouterItem
-import nolambda.linkrouter.android.StackRouterListener
-import nolambda.linkrouter.android.addRouterProcessor
 import nolambda.linkrouter.android.autoregister.AutoRegister
+import nolambda.linkrouter.android.extra.stack.StackAppRouter
 import nolambda.linkrouter.approuter.AppRouter
 import nolambda.linkrouter.examples.R
 
@@ -41,12 +35,7 @@ class StackActivity : AppCompatActivity() {
 
         btn_stack_replace.setOnClickListener {
             index += 1
-            stackRouter.replace(
-                StackRouterItem(
-                    route = FragmentStackRoute(StackFragment.create(index)),
-                    param = null
-                )
-            )
+            stackRouter.replace(FragmentStackRoute(StackFragment.create(index)))
         }
     }
 }

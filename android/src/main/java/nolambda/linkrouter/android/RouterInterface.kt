@@ -57,18 +57,3 @@ interface RouterProcessor<Extra> {
 }
 
 interface AppRouter<Extra> : RouterProcessor<Extra>, RouterComponents
-
-/* --------------------------------------------------- */
-/* > Stack Router */
-/* --------------------------------------------------- */
-
-data class StackRouterItem(
-    val route: BaseRoute<*>,
-    val param: Any?
-)
-
-interface StackRouter {
-    fun replace(item: StackRouterItem)
-    fun pop(): Boolean
-    fun popUntil(routeFinder: (StackRouterItem) -> Boolean): Boolean
-}
