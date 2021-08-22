@@ -1,3 +1,14 @@
 include ':core', ':android', ':annotations', ':processor', ':android-test'
 include ':samples:app', ':samples:approuter', 'samples:cart', 'samples:product'
-include ':extras:android-caller', ':extras:android-activityresult'
+
+def addExtras(moduleNames) {
+    moduleNames.forEach { name ->
+        include ":extras:${name}"
+    }
+}
+
+addExtras([
+        'android-caller',
+        'android-activityresult',
+        'android-compose'
+])

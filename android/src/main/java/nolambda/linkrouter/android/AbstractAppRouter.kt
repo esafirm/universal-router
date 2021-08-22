@@ -20,7 +20,7 @@ abstract class AbstractAppRouter<Extra>(
     private val uriRouter by lazy { uriRouterFactory.create() }
 
     private val middlewares by lazy { createMiddleWares() }
-    private val processors = linkedSetOf<Pair<Class<*>, RouteProcessor<in Any>>>()
+    private val processors = linkedSetOf<Pair<(Any?) -> Boolean, RouteProcessor<in Any>>>()
 
     private val _middleWares = middleWares
 
@@ -44,12 +44,8 @@ abstract class AbstractAppRouter<Extra>(
         processors.removeAll { it.second == processor }
     }
 
-    override fun <T> addProcessor(clazz: Class<T>, processor: RouteProcessor<T>) {
-        processors.add(clazz to processor as RouteProcessor<in Any>)
-    }
-
-    inline fun <reified T> addProcessor(noinline processor: RouteProcessor<T>) {
-        addProcessor(T::class.java, processor)
+    override fun addProcessor(canHandle: (result: Any?) -> Boolean, processor: RouteProcessor<*>) {
+        processors.add(canHandle to processor as RouteProcessor<in Any>)
     }
 
     /* --------------------------------------------------- */
@@ -140,9 +136,8 @@ abstract class AbstractAppRouter<Extra>(
         if (result == null) return
         if (processors.isEmpty()) return
 
-        val clazz = result.javaClass
-        processors.forEach { (c, processor) ->
-            if (c.isAssignableFrom(clazz)) {
+        processors.forEach { (canHandle, processor) ->
+            if (canHandle(result)) {
                 processor.invoke(result, info)
             }
         }

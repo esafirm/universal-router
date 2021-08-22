@@ -3,10 +3,11 @@ package nolambda.linkrouter.android
 import nolambda.linkrouter.DeepLinkUri
 import nolambda.linkrouter.matcher.DeepLinkEntryMatcher
 import nolambda.linkrouter.matcher.UriMatcher
+import java.io.Serializable
 
 abstract class BaseRoute<P : Any>(
     vararg val routePaths: String
-) {
+) : Serializable {
     open fun pathMatcher(): UriMatcher = DeepLinkEntryMatcher
 }
 

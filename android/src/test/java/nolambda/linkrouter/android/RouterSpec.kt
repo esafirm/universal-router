@@ -155,14 +155,14 @@ class RouterSpec : StringSpec({
         testRouter.register(HomeRoute) { returnedString }
         testRouter.register(ProductDetailRoute) { returnedChild }
 
-        testRouter.addProcessor<String> { it, _ ->
+        testRouter.addTypeProcessor<String> { it, _ ->
             stringInvoked = true
             it shouldBe returnedString
         }
-        testRouter.addProcessor<Int> { _, _ ->
+        testRouter.addTypeProcessor<Int> { _, _ ->
             intInvoked = true
         }
-        testRouter.addProcessor<Child> { it, _ ->
+        testRouter.addTypeProcessor<Child> { it, _ ->
             childInvoked = true
             it shouldBe returnedChild
         }

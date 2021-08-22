@@ -1,7 +1,6 @@
 package nolambda.linkrouter.android
 
 typealias RouteHandler<P, R, E> = (RouteParam<P, E>) -> R
-typealias RouteProcessor<T> = (T, ActionInfo) -> Unit
 
 class RouteParam<Param, Extra>(
     val param: Param? = null,
@@ -28,7 +27,7 @@ data class ActionInfo(
 interface RouterComponents {
     fun cleanRouter()
     fun removeProcessor(processor: RouteProcessor<*>)
-    fun <T> addProcessor(clazz: Class<T>, processor: RouteProcessor<T>)
+    fun addProcessor(canHandle: (result: Any?) -> Boolean, processor: RouteProcessor<*>)
 }
 
 interface RouterProcessor<Extra> {
@@ -54,3 +53,9 @@ interface RouterProcessor<Extra> {
 }
 
 interface AppRouter<Extra> : RouterProcessor<Extra>, RouterComponents
+
+interface StackRouter {
+    fun replace(route: Route)
+    fun pop()
+    fun popUntil(routeFinder: (Route) -> Boolean)
+}
