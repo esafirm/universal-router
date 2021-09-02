@@ -1,6 +1,6 @@
 ext {
     final appCompatVersion = '1.2.0'
-    final kotestVersion = "4.2.6"
+    final kotestVersion = "4.6.1"
     final coroutineVersion = '1.5.1'
 
     deps = [
