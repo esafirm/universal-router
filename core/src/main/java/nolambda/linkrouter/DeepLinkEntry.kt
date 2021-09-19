@@ -18,10 +18,13 @@ class DeepLinkEntry private constructor(
         private val PARAM_PATTERN = Pattern.compile(PARAM_REGEX)
 
         fun parse(url: String): DeepLinkEntry {
-            val parsedUri = url.toDeepLinkUri()
-            val schemeHostAndPath = schemeHostAndPath(parsedUri)
+            return parse(url.toDeepLinkUri())
+        }
+
+        fun parse(deepLinkUri: DeepLinkUri): DeepLinkEntry {
+            val schemeHostAndPath = schemeHostAndPath(deepLinkUri)
             val regex = Pattern.compile(schemeHostAndPath.replace(PARAM_REGEX.toRegex(), PARAM_VALUE) + "$")
-            return DeepLinkEntry(parsedUri, regex, parseParameters(parsedUri))
+            return DeepLinkEntry(deepLinkUri, regex, parseParameters(deepLinkUri))
         }
 
         private fun schemeHostAndPath(uri: DeepLinkUri): String {

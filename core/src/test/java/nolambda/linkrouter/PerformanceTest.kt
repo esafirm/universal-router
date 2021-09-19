@@ -12,8 +12,8 @@ class PerformanceTest : StringSpec({
     val logger = { log: String -> println(log) }
 
     val simpleRouter = SimpleUriRouter<Unit>(logger)
-    val keyRouter = KeyUriRouter<Unit>(logger) { entry ->
-        "${entry.uri.scheme}${entry.uri.host}"
+    val keyRouter = KeyUriRouter<Unit>(logger) {
+        "${it.scheme}${it.host}${it.pathSegments.size}"
     }
 
     val generateEntry = {
