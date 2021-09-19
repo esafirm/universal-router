@@ -5,6 +5,7 @@ import nolambda.linkrouter.KeyUriRouter
 import nolambda.linkrouter.SimpleUriRouter
 import nolambda.linkrouter.UriRouter
 import nolambda.linkrouter.UriRouterLogger
+import java.util.concurrent.ConcurrentHashMap
 
 class KeyUriRouterFactory(
     private val logger: UriRouterLogger? = RouterPlugin.logger,
@@ -16,10 +17,18 @@ class KeyUriRouterFactory(
 }
 
 class SimpleUriRouterFactory(
-    private val logger: UriRouterLogger? = RouterPlugin.logger
+    private val logger: UriRouterLogger? = RouterPlugin.logger,
+    private val isSupportConcurrent: Boolean = false
 ) : UriRouterFactory {
     override fun create(): UriRouter<UriResult> {
-        return SimpleUriRouter(logger)
+        return SimpleUriRouter(
+            logger = logger,
+            dataHolder = if (isSupportConcurrent) {
+                ConcurrentHashMap()
+            } else {
+                mutableMapOf()
+            }
+        )
     }
 }
 

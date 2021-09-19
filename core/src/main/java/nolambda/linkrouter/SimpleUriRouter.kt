@@ -2,9 +2,12 @@ package nolambda.linkrouter
 
 import nolambda.linkrouter.matcher.UriMatcher
 
-class SimpleUriRouter<RES>(private val logger: UriRouterLogger? = null) : UriRouter<RES>(logger) {
+class SimpleUriRouter<RES>(
+    private val logger: UriRouterLogger? = null,
+    dataHolder: MutableMap<DeepLinkEntry, EntryValue<RES>> = mutableMapOf()
+) : UriRouter<RES>(logger) {
 
-    private val entries: MutableMap<DeepLinkEntry, EntryValue<RES>> = mutableMapOf()
+    private val entries: MutableMap<DeepLinkEntry, EntryValue<RES>> = dataHolder
 
     override fun resolveEntry(route: String): Pair<DeepLinkEntry, EntryValue<RES>>? {
         logger?.invoke("Entries size: ${entries.size}")
