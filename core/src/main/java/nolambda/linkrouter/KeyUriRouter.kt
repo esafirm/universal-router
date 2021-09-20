@@ -36,12 +36,7 @@ class KeyUriRouter<URI>(
         val result = getResultFromEntryMap(key, route)
         return if (result == null) {
             logger?.invoke("Get from uri map for key: $key")
-            getResultFromUriMap(key, route).also {
-                /**
-                 * Because it's already available in [keyToEntryMap] remove the old data in [keyToUriMap]
-                 */
-                keyToUriMap.remove(key)
-            }
+            getResultFromUriMap(key, route)
         } else result
     }
 
@@ -52,18 +47,35 @@ class KeyUriRouter<URI>(
 
         var entry: DeepLinkEntry? = null
         var matcher: UriMatcher? = null
+        var pairOfUriAndMatcher: Pair<DeepLinkUri, UriMatcher>? = null
 
         val uriList = keyToUriMap[key] ?: return null
         val actualKey = uriList.firstOrNull { pair ->
-            entry = DeepLinkEntry.parse(pair.first)
-            matcher = pair.second
+
+            val currentEntry = DeepLinkEntry.parse(pair.first)
+            val currentMatcher = pair.second
+
+            // Pass the data to outside variable, so we can use it for other case
+            pairOfUriAndMatcher = pair
+            entry = currentEntry
+            matcher = currentMatcher
 
             // Add parsed entry to entry map
             val sets = keyToEntryMap.getOrPut(key) { mutableSetOf() }
-            sets.add(entry!! to matcher!!)
+            sets.add(currentEntry to currentMatcher)
 
-            matcher!!.match(entry!!, route)
+            currentMatcher.match(currentEntry, route)
         } ?: return null
+
+        /**
+         * Because it's already available in [keyToEntryMap] remove the old data in [keyToUriMap]
+         */
+        val sets = keyToUriMap[key]
+        if (sets == null || sets.size <= 1) {
+            keyToUriMap.remove(key)
+        } else {
+            sets.remove(pairOfUriAndMatcher)
+        }
 
         return createResult(actualKey.first, entry, matcher)
     }
