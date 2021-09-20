@@ -9,6 +9,13 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
+/**
+ * Register simple route immediately but lazy register uri routes concurrently.
+ * For now the only compatible way to use this is to set
+ * [nolambda.linkrouter.android.SimpleUriRouterFactory.isSupportConcurrent] to true
+ *
+ * @see [nolambda.linkrouter.android.SimpleUriRouterFactory]
+ */
 class LazyRegisterStrategy<Extra>(
     private val executor: ExecutorService = Executors.newFixedThreadPool(2)
 ) : RegisterStrategy<Extra> {

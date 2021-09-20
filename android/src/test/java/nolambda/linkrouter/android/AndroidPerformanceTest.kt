@@ -8,7 +8,10 @@ import kotlin.system.measureTimeMillis
 
 class AndroidPerformanceTest : StringSpec({
     val eagerRouter = object : AbstractAppRouter<Unit>() {}
-    val lazyRouter = object : AbstractAppRouter<Unit>(registerStrategy = LazyRegisterStrategy()) {}
+    val lazyRouter = object : AbstractAppRouter<Unit>(
+        registerStrategy = LazyRegisterStrategy(),
+        uriRouterFactory = SimpleUriRouterFactory(isSupportConcurrent = true)
+    ) {}
 
     val size = 10_000L
 

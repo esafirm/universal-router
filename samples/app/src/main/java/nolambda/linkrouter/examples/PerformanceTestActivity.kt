@@ -8,10 +8,12 @@ import nolambda.linkrouter.DeepLinkEntry
 import nolambda.linkrouter.android.AbstractAppRouter
 import nolambda.linkrouter.android.KeyUriRouterFactory
 import nolambda.linkrouter.android.Route
+import nolambda.linkrouter.android.RouterPlugin
 import nolambda.linkrouter.android.SimpleUriRouterFactory
 import nolambda.linkrouter.android.registerstrategy.EagerRegisterStrategy
 import nolambda.linkrouter.android.registerstrategy.LazyRegisterStrategy
 import nolambda.linkrouter.examples.utils.isDebuggable
+import kotlin.random.Random
 import kotlin.system.measureTimeMillis
 
 class PerformanceTestActivity : AppCompatActivity() {
@@ -57,7 +59,7 @@ class PerformanceTestActivity : AppCompatActivity() {
     private fun createRoutes(havePath: Boolean): List<Route> {
         if (havePath) {
             return (0 until ROUTES_SIZE).map {
-                object : Route("https://test.com/$it") {}
+                object : Route("https://test.com/${Random.nextInt(5)}/$it") {}
             }
         }
         return (0 until ROUTES_SIZE).map {
@@ -85,6 +87,7 @@ class PerformanceTestActivity : AppCompatActivity() {
         isLazy: Boolean,
         isKeyUri: Boolean
     ) {
+        val logger = ::log
         val routes = createRoutes(havePath = isNoUrl.not())
         val testRouter = object : AbstractAppRouter<Unit>(
             registerStrategy = when (isLazy) {
@@ -92,11 +95,10 @@ class PerformanceTestActivity : AppCompatActivity() {
                 false -> EagerRegisterStrategy()
             },
             uriRouterFactory = when (isKeyUri) {
-                true -> KeyUriRouterFactory {
-                    val uri = it.uri
-                    "${uri.scheme}${uri.host}${uri.pathSegments.firstOrNull() ?: ""}"
+                true -> KeyUriRouterFactory(logger) { uri ->
+                    "${uri.scheme}${uri.host}${uri.pathSegments.joinToString()}"
                 }
-                false -> SimpleUriRouterFactory()
+                false -> SimpleUriRouterFactory(logger)
             }
         ) {}
         val size = routes.size
@@ -117,7 +119,12 @@ class PerformanceTestActivity : AppCompatActivity() {
             block = { testRouter.goTo(route) }
         )
 
-        log("Total ${t1 + t2} ms")
+        val t3 = measureWithPrint(
+            log = { time -> "$tag second goTo took $time ms to resolve from $size entries" },
+            block = { testRouter.goTo(route) }
+        )
+
+        log("Total ${t1 + t2 + t3} ms")
     }
 
     private inline fun measureWithPrint(

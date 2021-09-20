@@ -17,13 +17,9 @@ abstract class UriRouter<RES>(
     private val logger: UriRouterLogger?
 ) : Router<String, RES?> {
 
-    internal val entries = ConcurrentHashMap<DeepLinkEntry, EntryValue<RES>>()
-
     abstract fun resolveEntry(route: String): Pair<DeepLinkEntry, EntryValue<RES>>?
 
     override fun resolve(route: String): RES? {
-        logger?.invoke("Entries size: ${entries.size}")
-
         val result = resolveEntry(route)
         if (result == null) {
             logger?.invoke("Path not implemented $route")
@@ -39,18 +35,9 @@ abstract class UriRouter<RES>(
         return value.handler.invoke(deepLinkUri, parameters)
     }
 
-    open fun addEntry(
+    abstract fun addEntry(
         vararg uri: String,
         matcher: UriMatcher = DeepLinkEntryMatcher,
         handler: UriRouterHandler<RES>
-    ) {
-        val deepLinkEntries = uri.map { DeepLinkEntry.parse(it) }
-        deepLinkEntries.forEach { entry ->
-            entries[entry] = EntryValue(handler, matcher)
-        }
-    }
-
-    override fun clear() {
-        entries.clear()
-    }
+    )
 }
