@@ -26,12 +26,25 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
 }
 
-artifacts {
-    archives sourcesJar
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    withSourcesJar()
 }
 
-test {
-    useJUnitPlatform()
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.java
+
+                groupId = appGroupId
+                artifactId = project.name
+                version = appVersion
+            }
+        }
+    }
 }
 
 /* --------------------------------------------------- */
@@ -48,9 +61,4 @@ dependencies {
     final kotestVersion = "4.6.1"
     testImplementation "io.kotest:kotest-runner-junit5:$kotestVersion"
     testImplementation "io.kotest:kotest-assertions-core:$kotestVersion"
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
 }

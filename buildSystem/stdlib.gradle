@@ -1,4 +1,7 @@
 ext {
     buildSystemDir = "${rootDir}/buildSystem"
     rootBuildDir = "${rootDir}/build"
+
+    appVersion = '2.9.0'
+    appGroupId = 'com.github.esafirm.universal-router'
 }

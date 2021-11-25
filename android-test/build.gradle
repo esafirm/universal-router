@@ -1,5 +1,20 @@
 apply from: "${buildSystemDir}/base.gradle"
+apply plugin: 'maven-publish'
 
 dependencies {
     implementation project(':android')
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = appGroupId
+                artifactId = project.name
+                version = appVersion
+            }
+        }
+    }
 }
