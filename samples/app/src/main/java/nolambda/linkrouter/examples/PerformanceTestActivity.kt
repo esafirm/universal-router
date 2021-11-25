@@ -8,7 +8,6 @@ import nolambda.linkrouter.DeepLinkEntry
 import nolambda.linkrouter.android.AbstractAppRouter
 import nolambda.linkrouter.android.KeyUriRouterFactory
 import nolambda.linkrouter.android.Route
-import nolambda.linkrouter.android.RouterPlugin
 import nolambda.linkrouter.android.SimpleUriRouterFactory
 import nolambda.linkrouter.android.registerstrategy.EagerRegisterStrategy
 import nolambda.linkrouter.android.registerstrategy.LazyRegisterStrategy
