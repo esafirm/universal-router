@@ -1,5 +1,6 @@
 package nolambda.linkrouter.examples
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +19,7 @@ import kotlin.system.measureTimeMillis
 class PerformanceTestActivity : AppCompatActivity() {
 
     companion object {
-        private const val ROUTES_SIZE = 20_000
+        private const val ROUTES_SIZE = 100
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,7 +95,8 @@ class PerformanceTestActivity : AppCompatActivity() {
                 false -> EagerRegisterStrategy()
             },
             uriRouterFactory = when (isKeyUri) {
-                true -> KeyUriRouterFactory(logger) { uri ->
+                true -> KeyUriRouterFactory(logger) {
+                    val uri = Uri.parse(it)
                     "${uri.scheme}${uri.host}${uri.pathSegments.joinToString()}"
                 }
                 false -> SimpleUriRouterFactory(logger)

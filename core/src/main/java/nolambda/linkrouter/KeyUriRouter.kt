@@ -11,7 +11,7 @@ import nolambda.linkrouter.matcher.UriMatcher
  */
 class KeyUriRouter<URI>(
     private val logger: UriRouterLogger? = null,
-    private val keyExtractor: (DeepLinkUri) -> String
+    private val keyExtractor: (String) -> String
 ) : UriRouter<URI>(logger) {
 
     private val keyToUriMap = mutableMapOf<String, MutableSet<Pair<DeepLinkUri, UriMatcher>>>()
@@ -24,8 +24,7 @@ class KeyUriRouter<URI>(
     }
 
     override fun resolveEntry(route: String): Pair<DeepLinkEntry, EntryValue<URI>>? {
-        val deepLinkUri = route.toDeepLinkUri()
-        val key = keyExtractor(deepLinkUri)
+        val key = keyExtractor(route)
 
         logger?.run {
             invoke("Key: $key")
@@ -117,8 +116,8 @@ class KeyUriRouter<URI>(
         handler: UriRouterHandler<URI>
     ) {
         uri.forEach {
+            val key = keyExtractor(it)
             val deepLinkUri = it.toDeepLinkUri()
-            val key = keyExtractor(deepLinkUri)
 
             inputToEntryContainer(key, deepLinkUri, matcher)
 
