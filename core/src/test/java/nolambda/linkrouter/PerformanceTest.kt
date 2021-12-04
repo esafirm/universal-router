@@ -7,7 +7,7 @@ import kotlin.system.measureTimeMillis
 
 class PerformanceTest : StringSpec({
 
-    val size = 500L
+    val size = 20_000L
     val random = Random(size)
 
     val logger = { log: String -> println(log) }

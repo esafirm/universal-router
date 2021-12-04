@@ -7,6 +7,7 @@ import nolambda.linkrouter.android.middlewares.MiddleWareResult
 import nolambda.linkrouter.android.middlewares.Middleware
 import nolambda.linkrouter.android.registerstrategy.EagerRegisterStrategy
 import nolambda.linkrouter.android.registerstrategy.RegisterStrategy
+import kotlin.system.measureTimeMillis
 
 abstract class AbstractAppRouter<Extra>(
     vararg middleWares: Middleware<Extra> = emptyArray(),
@@ -57,7 +58,11 @@ abstract class AbstractAppRouter<Extra>(
     /* --------------------------------------------------- */
 
     override fun <P : Any, R> register(route: BaseRoute<P>, handler: RouteHandler<P, R, Extra>) {
-        registerStrategy.register(simpleRouter, uriRouter, route, handler)
+        measureTimeMillis {
+            registerStrategy.register(simpleRouter, uriRouter, route, handler)
+        }.also {
+            RouterPlugin.logger?.invoke("registers! took $it ms")
+        }
     }
 
     override fun resolveUri(uri: String): UriResult? {
