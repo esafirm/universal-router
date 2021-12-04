@@ -1,6 +1,5 @@
 package nolambda.linkrouter
 
-import nolambda.linkrouter.DeepLinkUri.Companion.toDeepLinkUri
 import nolambda.linkrouter.matcher.UriMatcher
 
 /**
@@ -14,10 +13,32 @@ class KeyUriRouter<URI>(
     private val keyExtractor: (String) -> String
 ) : UriRouter<URI>(logger) {
 
-    private val keyToUriMap = mutableMapOf<String, MutableSet<Pair<DeepLinkUri, UriMatcher>>>()
-    private val keyToEntryMap = mutableMapOf<String, MutableSet<Pair<DeepLinkEntry, UriMatcher>>>()
+    /**
+     * Key: From key extractor. Usually scheme + host + path
+     * Value: Set of Pair of [DeepLinkEntry] and the matcher [UriMatcher]
+     *
+     * The result from here will be moved to [keyToEntryMap]
+     * and the entry will be deleted after that
+     */
+    private val keyToUriMap = mutableMapOf<String, MutableSet<Pair<String, UriMatcher>>>()
 
-    private val handlerMap = mutableMapOf<DeepLinkUri, UriRouterHandler<URI>>()
+    /**
+     * Key: From key extractor. Usually scheme + host + path
+     * Value: Set of Pair of [DeepLinkEntry] and the matcher [UriMatcher]
+     *
+     * If there's a value found in here, we don't need to search in [keyToUriMap]
+     */
+    private val keyToEntryMap =
+        mutableMapOf<String, MutableSet<Triple<DeepLinkEntry, String, UriMatcher>>>()
+
+    /**
+     * Key: Registered route
+     * Value: Registered lambda
+     *
+     * If we found registered route (key) from [keyToEntryMap] or [keyToUriMap]
+     * we will find the registered lambda in here
+     */
+    private val handlerMap = mutableMapOf<String, UriRouterHandler<URI>>()
 
     override fun clear() {
         keyToUriMap.clear()
@@ -46,7 +67,7 @@ class KeyUriRouter<URI>(
 
         var entry: DeepLinkEntry? = null
         var matcher: UriMatcher? = null
-        var pairOfUriAndMatcher: Pair<DeepLinkUri, UriMatcher>? = null
+        var pairOfUriAndMatcher: Pair<String, UriMatcher>? = null
 
         val uriList = keyToUriMap[key] ?: return null
         val actualKey = uriList.firstOrNull { pair ->
@@ -61,7 +82,7 @@ class KeyUriRouter<URI>(
 
             // Add parsed entry to entry map
             val sets = keyToEntryMap.getOrPut(key) { mutableSetOf() }
-            sets.add(currentEntry to currentMatcher)
+            sets.add(Triple(currentEntry, pair.first, currentMatcher))
 
             currentMatcher.match(currentEntry, route)
         } ?: return null
@@ -84,25 +105,26 @@ class KeyUriRouter<URI>(
         route: String
     ): Pair<DeepLinkEntry, EntryValue<URI>>? {
         val set = keyToEntryMap[key] ?: return null
-        val actualKey = set.firstOrNull { (entry, matcher) ->
+        val actualKey = set.firstOrNull { (entry, _, matcher) ->
             matcher.match(entry, route)
         } ?: return null
 
-        return createResult(actualKey.first.uri, actualKey.first, actualKey.second)
+        return createResult(actualKey.second, actualKey.first, actualKey.third)
     }
 
     private fun createResult(
-        keyUri: DeepLinkUri,
+        registeredRoute: String,
         entry: DeepLinkEntry?,
         matcher: UriMatcher?
     ): Pair<DeepLinkEntry, EntryValue<URI>> {
-        val handler = handlerMap[keyUri] ?: error("Handler not available for $keyUri")
+        val handler = handlerMap[registeredRoute]
+            ?: error("Handler not available for $registeredRoute")
 
         return Pair(
-            first = entry ?: error("Entry not available fro $keyUri"),
+            first = entry ?: error("Entry not available fro $registeredRoute"),
             second = EntryValue(
                 handler,
-                matcher ?: error("Matcher not available fro $keyUri")
+                matcher ?: error("Matcher not available fro $registeredRoute")
             )
         )
     }
@@ -111,22 +133,19 @@ class KeyUriRouter<URI>(
      * This is not thread-safe
      */
     override fun addEntry(
-        vararg uri: String,
+        vararg uris: String,
         matcher: UriMatcher,
         handler: UriRouterHandler<URI>
     ) {
-        uri.forEach {
-            val key = keyExtractor(it)
-            val deepLinkUri = it.toDeepLinkUri()
-
-            inputToEntryContainer(key, deepLinkUri, matcher)
-
-            handlerMap[deepLinkUri] = handler
+        uris.forEach { route ->
+            val key = keyExtractor(route)
+            inputToEntryContainer(key, route, matcher)
+            handlerMap[route] = handler
         }
     }
 
-    private fun inputToEntryContainer(key: String, uri: DeepLinkUri, matcher: UriMatcher) {
+    private fun inputToEntryContainer(key: String, registeredRoute: String, matcher: UriMatcher) {
         val entriesHolder = keyToUriMap.getOrPut(key) { mutableSetOf() }
-        entriesHolder.add(uri to matcher)
+        entriesHolder.add(registeredRoute to matcher)
     }
 }

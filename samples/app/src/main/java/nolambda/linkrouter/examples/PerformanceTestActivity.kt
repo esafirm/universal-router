@@ -1,11 +1,11 @@
 package nolambda.linkrouter.examples
 
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_performance_test.*
 import nolambda.linkrouter.DeepLinkEntry
+import nolambda.linkrouter.DeepLinkUri.Companion.toDeepLinkUri
 import nolambda.linkrouter.android.AbstractAppRouter
 import nolambda.linkrouter.android.KeyUriRouterFactory
 import nolambda.linkrouter.android.Route
@@ -19,7 +19,7 @@ import kotlin.system.measureTimeMillis
 class PerformanceTestActivity : AppCompatActivity() {
 
     companion object {
-        private const val ROUTES_SIZE = 100
+        private const val ROUTES_SIZE = 20_000
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +59,7 @@ class PerformanceTestActivity : AppCompatActivity() {
     private fun createRoutes(havePath: Boolean): List<Route> {
         if (havePath) {
             return (0 until ROUTES_SIZE).map {
-                object : Route("https://test.com/${Random.nextInt(5)}/$it") {}
+                object : Route("https://test.com/${Random.nextInt(5)}/$it/{a}") {}
             }
         }
         return (0 until ROUTES_SIZE).map {
@@ -96,8 +96,8 @@ class PerformanceTestActivity : AppCompatActivity() {
             },
             uriRouterFactory = when (isKeyUri) {
                 true -> KeyUriRouterFactory(logger) {
-                    val uri = Uri.parse(it)
-                    "${uri.scheme}${uri.host}${uri.pathSegments.joinToString()}"
+                    val uri = it.toDeepLinkUri()
+                    "${uri.scheme}${uri.host}${uri.pathSegments[0]}${uri.pathSegments[1]}"
                 }
                 false -> SimpleUriRouterFactory(logger)
             }
@@ -114,7 +114,10 @@ class PerformanceTestActivity : AppCompatActivity() {
             }
         )
 
-        val route = routes.random().routePaths.firstOrNull() ?: return
+        // Get test route and assign the variable
+        val route = routes.random().routePaths.first()
+            .replace("{a}", Random.nextInt().toString())
+
         val t2 = measureWithPrint(
             log = { time -> "$tag goTo took $time ms to resolve from $size entries" },
             block = { testRouter.goTo(route) }
