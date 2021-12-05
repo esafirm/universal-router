@@ -6,6 +6,13 @@ import nolambda.linkrouter.matcher.UriMatcher
  * router that use "key" to group [DeepLinkUri] or [DeepLinkEntry] for faster
  * register and lookup
  *
+ * Flow:
+ * 1. Register the route to [handlerMap] and [keyToUriMap]
+ * 2. When resolving, it first search in [keyToEntryMap]
+ *   a. If no match, then search to [keyToUriMap], this will producing [DeepLinkEntry] and add it to [keyToEntryMap]
+ *   b. If match it will resulting the registered route
+ * 3. Get the handler from [handlerMap] by using the registered route
+ *
  * Please note, this router addition process is not thread-safe.
  */
 class KeyUriRouter<URI>(

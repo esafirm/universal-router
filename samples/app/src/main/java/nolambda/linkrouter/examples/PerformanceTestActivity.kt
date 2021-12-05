@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_performance_test.*
 import nolambda.linkrouter.DeepLinkEntry
-import nolambda.linkrouter.DeepLinkUri.Companion.toDeepLinkUri
 import nolambda.linkrouter.android.AbstractAppRouter
 import nolambda.linkrouter.android.KeyUriRouterFactory
 import nolambda.linkrouter.android.Route
@@ -13,6 +12,7 @@ import nolambda.linkrouter.android.SimpleUriRouterFactory
 import nolambda.linkrouter.android.registerstrategy.EagerRegisterStrategy
 import nolambda.linkrouter.android.registerstrategy.LazyRegisterStrategy
 import nolambda.linkrouter.examples.utils.isDebuggable
+import nolambda.linkrouter.matcher.DeepLinkEntryMatcher
 import kotlin.random.Random
 import kotlin.system.measureTimeMillis
 
@@ -52,6 +52,7 @@ class PerformanceTestActivity : AppCompatActivity() {
             block = {
                 // This have initialization cost
                 DeepLinkEntry.parse("https://test.com/go")
+                DeepLinkEntryMatcher == DeepLinkEntryMatcher
             }
         )
     }
@@ -96,8 +97,9 @@ class PerformanceTestActivity : AppCompatActivity() {
             },
             uriRouterFactory = when (isKeyUri) {
                 true -> KeyUriRouterFactory(logger) {
-                    val uri = it.toDeepLinkUri()
-                    "${uri.scheme}${uri.host}${uri.pathSegments[0]}${uri.pathSegments[1]}"
+                    val uri = java.net.URL(it)
+                    val paths = uri.path.split("/")
+                    "${paths[1]}${paths[2]}"
                 }
                 false -> SimpleUriRouterFactory(logger)
             }
@@ -108,8 +110,8 @@ class PerformanceTestActivity : AppCompatActivity() {
         val t1 = measureWithPrint(
             log = { time -> "$tag registers took $time ms for $size entries" },
             block = {
-                routes.forEach {
-                    testRouter.addEntry(it)
+                routes.forEach { route ->
+                    testRouter.addEntry(route)
                 }
             }
         )
