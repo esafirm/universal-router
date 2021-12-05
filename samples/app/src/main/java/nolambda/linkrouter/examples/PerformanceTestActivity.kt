@@ -52,7 +52,6 @@ class PerformanceTestActivity : AppCompatActivity() {
             block = {
                 // This have initialization cost
                 DeepLinkEntry.parse("https://test.com/go")
-                DeepLinkEntryMatcher == DeepLinkEntryMatcher
             }
         )
     }

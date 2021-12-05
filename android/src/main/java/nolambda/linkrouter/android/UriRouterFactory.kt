@@ -6,7 +6,6 @@ import nolambda.linkrouter.SimpleUriRouter
 import nolambda.linkrouter.UriRouter
 import nolambda.linkrouter.UriRouterLogger
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.system.measureTimeMillis
 
 class KeyUriRouterFactory(
     private val logger: UriRouterLogger? = RouterPlugin.logger,
