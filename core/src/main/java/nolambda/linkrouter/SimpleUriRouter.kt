@@ -18,8 +18,8 @@ class SimpleUriRouter<RES>(
         }?.toPair()
     }
 
-    override fun addEntry(vararg uri: String, matcher: UriMatcher, handler: UriRouterHandler<RES>) {
-        val deepLinkEntries = uri.map { DeepLinkEntry.parse(it) }
+    override fun addEntry(vararg uris: String, matcher: UriMatcher, handler: UriRouterHandler<RES>) {
+        val deepLinkEntries = uris.map { DeepLinkEntry.parse(it) }
         deepLinkEntries.forEach { entry ->
             entries[entry] = EntryValue(handler, matcher)
         }

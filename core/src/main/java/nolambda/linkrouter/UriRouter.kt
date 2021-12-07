@@ -36,7 +36,7 @@ abstract class UriRouter<RES>(
     }
 
     abstract fun addEntry(
-        vararg uri: String,
+        vararg uris: String,
         matcher: UriMatcher = DeepLinkEntryMatcher,
         handler: UriRouterHandler<RES>
     )

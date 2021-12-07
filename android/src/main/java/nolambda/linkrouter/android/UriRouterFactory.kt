@@ -1,6 +1,6 @@
 package nolambda.linkrouter.android
 
-import nolambda.linkrouter.DeepLinkUri
+import nolambda.linkrouter.DeepLinkUri.Companion.toDeepLinkUri
 import nolambda.linkrouter.KeyUriRouter
 import nolambda.linkrouter.SimpleUriRouter
 import nolambda.linkrouter.UriRouter
@@ -9,7 +9,10 @@ import java.util.concurrent.ConcurrentHashMap
 
 class KeyUriRouterFactory(
     private val logger: UriRouterLogger? = RouterPlugin.logger,
-    private val keyExtractor: (DeepLinkUri) -> String = { uri -> "${uri.scheme}${uri.host}" }
+    private val keyExtractor: (String) -> String = { it ->
+        val uri = it.toDeepLinkUri()
+        "${uri.scheme}${uri.host}"
+    }
 ) : UriRouterFactory {
     override fun create(): UriRouter<UriResult> {
         return KeyUriRouter(logger, keyExtractor)

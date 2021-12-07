@@ -1,19 +1,21 @@
 package nolambda.linkrouter
 
 import io.kotest.core.spec.style.StringSpec
-import java.util.Random
+import nolambda.linkrouter.DeepLinkUri.Companion.toDeepLinkUri
+import java.util.*
 import kotlin.system.measureTimeMillis
 
 class PerformanceTest : StringSpec({
 
-    val size = 500L
+    val size = 20_000L
     val random = Random(size)
 
     val logger = { log: String -> println(log) }
 
     val simpleRouter = SimpleUriRouter<Unit>(logger)
     val keyRouter = KeyUriRouter<Unit>(logger) {
-        "${it.scheme}${it.host}${it.pathSegments.size}"
+        val deepLinkUri = it.toDeepLinkUri()
+        "${deepLinkUri.scheme}${deepLinkUri.host}${deepLinkUri.pathSegments.size}"
     }
 
     val generateEntry = {

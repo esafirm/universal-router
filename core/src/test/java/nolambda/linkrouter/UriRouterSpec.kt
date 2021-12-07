@@ -10,7 +10,10 @@ class UriRouterSpec : StringSpec({
 
     val routers = listOf(
         SimpleUriRouter<String>(),
-        KeyUriRouter { "${it.scheme}${it.host}" }
+        KeyUriRouter {
+            val uri = it.toDeepLinkUri()
+            "${uri.scheme}${uri.host}"
+        }
     )
 
     "it should match and resolve to respected path" {
@@ -24,6 +27,7 @@ class UriRouterSpec : StringSpec({
                 "http://test.com/promo-list/item3" to "6",
                 "http://test.com/promo-list/item4" to "7",
                 "http://test.com/promo-list/{a}" to "8",
+                "http://test.com/promo-list/item5" to "8", // Should hit the above URI
             )
 
             println("Using $router")
