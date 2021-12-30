@@ -1,5 +1,6 @@
 package nolambda.linkrouter
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
@@ -28,6 +29,28 @@ class DeepLinkUriSpec : StringSpec({
         parameters.size shouldBe 2
         parameters["a"] shouldBe "a"
         parameters["b"] shouldBe "b"
+    }
+
+    "It should handle match properly" {
+        val deeplink = DeepLinkEntry.parse("https://example.com")
+
+        deeplink.matches("https://example.com") shouldBe true
+        deeplink.matches("https://example1com") shouldBe false
+        deeplink.matches("https://example.com?test-param=true") shouldBe true
+    }
+
+    "Regex should be functioning in path" {
+        val deeplink = DeepLinkEntry.parse("https://test.com/.*")
+        deeplink.matches("https://test.com/asdasdasd/asdasdsad/asdasd") shouldBe true
+    }
+
+    "Regex should not functioning in scheme and host" {
+        shouldThrow<IllegalArgumentException> {
+            DeepLinkEntry.parse(".*://test.com/")
+        }
+        shouldThrow<IllegalArgumentException> {
+            DeepLinkEntry.parse("https://[a|b].com/")
+        }
     }
 })
 
