@@ -71,7 +71,7 @@ abstract class AbstractAppRouter<Extra>(
 
     override fun goTo(uri: String): RouteResult {
         return try {
-            val result = resolveUri(uri) ?: return RouteResult(false)
+            val result = resolveUri(uri) ?: return RouteResult(false, errorMsg = "Could not resolve uri")
             val (deepLinkUri, route, param) = result
             val routeParam = if (route is RouteWithParam<*>) {
                 route.mapUri(deepLinkUri, param)
@@ -80,7 +80,7 @@ abstract class AbstractAppRouter<Extra>(
             RouteResult(true, routeResult)
         } catch (e: Exception) {
             e.handleError()
-            RouteResult(false)
+            RouteResult(false, errorMsg = e.message)
         }
     }
 

@@ -2,7 +2,8 @@ package nolambda.linkrouter.android
 
 class RouteResult(
     val isHandled: Boolean,
-    private val result: Any? = null
+    private val result: Any? = null,
+    val errorMsg: String? = null
 ) {
     @Suppress("UNCHECKED_CAST")
     fun <R> getResultOrError(): R = result as R
